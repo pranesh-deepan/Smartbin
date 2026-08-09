@@ -17,7 +17,7 @@ const register = async (req, res) => {
             });
         }
 
-        const { name, email, password } = req.body;
+        const { name, email, password, role } = req.body;
 
         // Check Existing User
         const existingUser = await User.findOne({ email });
@@ -37,6 +37,7 @@ const register = async (req, res) => {
             name,
             email,
             password: hashedPassword,
+            role,
         });
 
         await user.save();
@@ -163,8 +164,70 @@ const getMe = async (req, res) => {
     }
 };
 
+const updateLocation = async (req, res) => {
+    try {
+        const { latitude, longitude } = req.body;
+
+        if (
+            latitude === undefined ||
+            longitude === undefined ||
+            isNaN(latitude) ||
+            isNaN(longitude)
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Valid latitude and longitude are required",
+            });
+        }
+
+        if (latitude < -90 || latitude > 90) {
+            return res.status(400).json({
+                success: false,
+                message: "Latitude must be between -90 and 90",
+            });
+        }
+
+        if (longitude < -180 || longitude > 180) {
+            return res.status(400).json({
+                success: false,
+                message: "Longitude must be between -180 and 180",
+            });
+        }
+
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        user.currentLocation = {
+            latitude,
+            longitude,
+        };
+
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Location updated successfully",
+            currentLocation: user.currentLocation,
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+};
+
 module.exports = {
-    register,login,getMe
+    register,login,getMe,updateLocation,
 };
 
 

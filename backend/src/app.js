@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const binRoutes = require("./routes/binRoutes");
 const authRoutes = require("./routes/authRoutes");
+const sensorDataRoutes = require("./routes/sensorDataRoutes");
+
 
 const app = express();
 
@@ -12,6 +14,7 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/bins", binRoutes);
+app.use("/api/sensor-data", sensorDataRoutes);
 
 // Test Route
 app.get("/", (req, res) => {
