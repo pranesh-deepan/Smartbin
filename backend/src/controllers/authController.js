@@ -226,8 +226,51 @@ const updateLocation = async (req, res) => {
     }
 };
 
+const updateAvailability = async (req, res) => {
+    try {
+        const { availability } = req.body;
+
+        // Validate availability
+        if (!availability || !["Available", "Busy"].includes(availability)) {
+            return res.status(400).json({
+                success: false,
+                message: "Availability must be either Available or Busy",
+            });
+        }
+
+        // Find logged-in user
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        // Update availability
+        user.availability = availability;
+
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Availability updated successfully",
+            availability: user.availability,
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+};
+
 module.exports = {
-    register,login,getMe,updateLocation,
+    register,login,getMe,updateLocation,updateAvailability,
 };
 
 

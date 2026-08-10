@@ -2,7 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 
-const { register, login, getMe, updateLocation } = require("../controllers/authController");
+const { register, login, getMe, updateLocation, updateAvailability, } = require("../controllers/authController");
 const { protect, authorize } = require("../middleware/authMiddleware");
 
 // Register User
@@ -20,6 +20,7 @@ router.put(
     protect,
     updateLocation
 );
+
 
 // Admin Only Test Route
 router.get(
@@ -47,4 +48,13 @@ router.get(
         });
     }
 );
+
+// Update Worker Availability
+router.put(
+    "/availability",
+    protect,
+    authorize("Worker"),
+    updateAvailability
+);
+
 module.exports = router;
