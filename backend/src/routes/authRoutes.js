@@ -2,17 +2,39 @@ const express = require("express");
 
 const router = express.Router();
 
-const { register, login, getMe, updateLocation, updateAvailability, } = require("../controllers/authController");
+const { register, login, getMe, updateLocation, updateAvailability, getWorkerLocation, updateProfile, changePassword} = require("../controllers/authController");
 const { protect, authorize } = require("../middleware/authMiddleware");
 
 // Register User
-router.post("/register", register);
+router.post(
+    "/register",
+    protect,
+    authorize("Admin"),
+    register
+);
 
 // Login User
 router.post("/login", login);
 
 // Get Current User
 router.get("/me", protect, getMe);
+
+// Update Current User Profile
+
+router.put(
+    "/profile",
+    protect,
+    updateProfile
+);
+
+
+// Change Current User Password
+
+router.put(
+    "/change-password",
+    protect,
+    changePassword
+);
 
 // Update Current Worker Location
 router.put(
@@ -55,6 +77,14 @@ router.put(
     protect,
     authorize("Worker"),
     updateAvailability
+);
+// Admin Only - Get Worker GPS Location
+
+router.get(
+    "/worker/:workerId/location",
+    protect,
+    authorize("Admin"),
+    getWorkerLocation
 );
 
 module.exports = router;

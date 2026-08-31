@@ -1,0 +1,362 @@
+/* =========================================================
+   WORKER JOBS PAGE
+========================================================= */
+
+.worker-jobs-page {
+    width: 100%;
+    min-height: 100%;
+    padding: 28px 36px 40px;
+    box-sizing: border-box;
+    background: #f5f7f6;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.worker-jobs-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 26px;
+}
+
+.worker-jobs-header h2 {
+    margin: 0 0 6px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #071a2f;
+}
+
+.worker-jobs-header p {
+    margin: 0;
+    font-size: 14px;
+    color: #63748b;
+}
+
+
+/* =========================================================
+   LIVE STATUS
+========================================================= */
+
+.worker-jobs-live-status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 7px 13px;
+
+    border: 1px solid #bde5cd;
+    border-radius: 20px;
+
+    background: #ecfdf3;
+
+    color: #087443;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.worker-jobs-live-status span {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #0b9650;
+}
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.worker-jobs-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 16px;
+
+    margin-bottom: 22px;
+}
+
+
+/* =========================================================
+   SUMMARY CARD
+========================================================= */
+
+.worker-job-summary-card {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 18px;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe5e2;
+
+    border-radius: 11px;
+
+    box-shadow:
+        0 3px 10px rgba(0, 0, 0, 0.03);
+}
+
+.worker-job-summary-card span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #718198;
+
+    font-size: 12px;
+
+    font-weight: 500;
+}
+
+.worker-job-summary-card strong {
+    display: block;
+
+    color: #071a2f;
+
+    font-size: 24px;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   SUMMARY ICON
+========================================================= */
+
+.worker-job-summary-icon {
+    width: 43px;
+    height: 43px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    font-size: 19px;
+}
+
+.worker-job-summary-icon.pending {
+    background: #fff7e8;
+}
+
+.worker-job-summary-icon.accepted {
+    background: #eef8f2;
+}
+
+.worker-job-summary-icon.progress {
+    background: #eef5ff;
+}
+
+.worker-job-summary-icon.completed {
+    background: #edf9f1;
+}
+
+
+/* =========================================================
+   MAIN JOB CARD
+========================================================= */
+
+.worker-jobs-card {
+    width: 100%;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe5e2;
+
+    border-radius: 13px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.03);
+}
+
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
+.worker-jobs-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 22px 25px;
+
+    border-bottom: 1px solid #e4e9e6;
+}
+
+.worker-jobs-card-header h3 {
+    margin: 0 0 5px;
+
+    color: #071a2f;
+
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.worker-jobs-card-header p {
+    margin: 0;
+
+    color: #718198;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   REFRESH BUTTON
+========================================================= */
+
+.worker-jobs-refresh-button {
+    height: 36px;
+
+    padding: 0 13px;
+
+    border: 1px solid #ccd6d1;
+
+    border-radius: 7px;
+
+    background: #ffffff;
+
+    color: #0b5d35;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.worker-jobs-refresh-button:hover {
+    background: #f0faf4;
+
+    border-color: #0b9650;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.worker-jobs-empty {
+    min-height: 350px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 40px 20px;
+}
+
+.worker-jobs-empty-icon {
+    width: 68px;
+    height: 68px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 15px;
+
+    border-radius: 50%;
+
+    background: #eef8f2;
+
+    font-size: 29px;
+}
+
+.worker-jobs-empty h3 {
+    margin: 0 0 7px;
+
+    color: #172b43;
+
+    font-size: 16px;
+
+    font-weight: 700;
+}
+
+.worker-jobs-empty p {
+    max-width: 380px;
+
+    margin: 0;
+
+    color: #718198;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1000px) {
+
+    .worker-jobs-summary {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .worker-jobs-page {
+        padding: 22px 18px 30px;
+    }
+
+    .worker-jobs-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 14px;
+    }
+
+    .worker-jobs-summary {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .worker-jobs-page {
+        padding: 18px 12px 25px;
+    }
+
+    .worker-jobs-card-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+}

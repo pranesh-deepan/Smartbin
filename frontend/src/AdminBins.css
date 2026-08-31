@@ -1,0 +1,391 @@
+.admin-bins-page {
+    min-height: calc(100vh - 72px);
+    padding: 30px;
+    box-sizing: border-box;
+    background: #f5f7f6;
+}
+
+.admin-bins-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.admin-bins-header h2 {
+    margin: 0 0 6px;
+    font-size: 28px;
+    color: #111827;
+}
+
+.admin-bins-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.bin-count {
+    min-width: 100px;
+    padding: 12px 18px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.bin-count strong {
+    display: block;
+    color: #16a34a;
+    font-size: 24px;
+}
+
+.bin-count span {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.bin-message {
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.bin-message.success {
+    background: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+.bin-message.error {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.bin-management-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.map-card,
+.add-bin-card,
+.bin-list-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.card-header h3 {
+    margin: 0 0 5px;
+    color: #111827;
+    font-size: 18px;
+}
+
+.card-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.map-wrapper {
+    height: 520px;
+}
+
+.admin-map {
+    width: 100%;
+    height: 100%;
+}
+
+.map-legend {
+    display: flex;
+    gap: 20px;
+    padding: 15px 20px;
+    border-top: 1px solid #e5e7eb;
+    font-size: 12px;
+    color: #4b5563;
+}
+
+.map-legend span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-dot {
+    width: 11px;
+    height: 11px;
+    display: inline-block;
+    border-radius: 50%;
+}
+
+.legend-dot.green {
+    background: #16a34a;
+}
+
+.legend-dot.orange {
+    background: #f59e0b;
+}
+
+.legend-dot.red {
+    background: #dc2626;
+}
+
+.add-bin-card {
+    padding-bottom: 20px;
+}
+
+.add-bin-card form {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 11px 12px;
+    box-sizing: border-box;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    outline: none;
+    font-size: 14px;
+    color: #111827;
+}
+
+.form-group input:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+.form-group input[readonly] {
+    background: #f9fafb;
+}
+
+.coordinates {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.location-help {
+    padding: 11px;
+    margin-bottom: 16px;
+    border-radius: 7px;
+    background: #f0fdf4;
+    color: #166534;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.add-bin-button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 7px;
+    background: #16a34a;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.add-bin-button:hover {
+    background: #15803d;
+}
+
+.bin-list-card {
+    margin-bottom: 20px;
+}
+
+.bin-table-wrapper {
+    overflow-x: auto;
+}
+
+.bin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.bin-table th,
+.bin-table td {
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 13px;
+}
+
+.bin-table th {
+    background: #f9fafb;
+    color: #4b5563;
+    font-weight: 600;
+}
+
+.bin-table td {
+    color: #374151;
+}
+
+.bin-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+.fill-badge {
+    display: inline-block;
+    min-width: 45px;
+    padding: 5px 8px;
+    border-radius: 20px;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.table-delete-button,
+.delete-bin-button {
+    border: none;
+    border-radius: 6px;
+    background: #fee2e2;
+    color: #b91c1c;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.table-delete-button {
+    padding: 7px 12px;
+    font-size: 12px;
+}
+
+.table-delete-button:hover,
+.delete-bin-button:hover {
+    background: #fecaca;
+}
+
+.bin-popup h4 {
+    margin: 0 0 10px;
+    color: #111827;
+}
+
+.bin-popup p {
+    margin: 5px 0;
+    font-size: 12px;
+}
+
+.delete-bin-button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px;
+}
+
+.empty-state {
+    padding: 40px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+@media (max-width: 1000px) {
+    .bin-management-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .admin-bins-page {
+        padding: 20px 15px;
+    }
+
+    .admin-bins-header {
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .map-wrapper {
+        height: 400px;
+    }
+
+    .map-legend {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+}
+.popup-fill-section {
+    margin-top: 12px;
+}
+
+.popup-fill-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 12px;
+}
+
+.popup-fill-bar {
+    width: 100%;
+    height: 9px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #e5e7eb;
+}
+
+.popup-fill-progress {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.popup-fill-status {
+    display: block;
+    margin-top: 5px;
+    font-size: 11px;
+    font-weight: 600;
+}
+.popup-fill-section {
+    margin-top: 12px;
+}
+
+.popup-fill-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 12px;
+}
+
+.popup-fill-bar {
+    width: 100%;
+    height: 9px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #e5e7eb;
+}
+
+.popup-fill-progress {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.popup-fill-status {
+    display: block;
+    margin-top: 5px;
+    font-size: 11px;
+    font-weight: 600;
+}

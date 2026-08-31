@@ -14,6 +14,12 @@ const jobSchema = new mongoose.Schema(
             default: null,
         },
 
+        rejectedWorkers: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
         binLocation: {
             latitude: {
                 type: Number,

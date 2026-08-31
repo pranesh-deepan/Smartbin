@@ -1,5 +1,7 @@
 const Bin = require("../models/Bin");
 const { validateBin } = require("../validations/binValidation");
+const Job = require("../models/Job");
+const FILL_LEVEL_THRESHOLD = 90;
 
 const createBin = async (req, res) => {
     try {
@@ -116,7 +118,8 @@ const updateBin = async (req, res) => {
             location,
             latitude,
             longitude,
-            status
+            status,
+            fillLevel
         } = req.body;
 
         const bin = await Bin.findOne({ binId });
@@ -148,12 +151,19 @@ const updateBin = async (req, res) => {
             bin.status = status;
         }
 
+        if (fillLevel !== undefined) {
+                bin.fillLevel = fillLevel;
+        }
+
         await bin.save();
+
+        const job = await createAutomaticJobIfRequired(bin);
 
         return res.status(200).json({
             success: true,
             message: "Bin updated successfully",
             bin,
+            jobCreated: job !== null && job.status === "Pending",
         });
 
     } catch (error) {
@@ -193,6 +203,67 @@ const deleteBin = async (req, res) => {
             success: false,
             message: "Internal Server Error",
         });
+    }
+};
+
+const createAutomaticJobIfRequired = async (bin) => {
+    try {
+        // Check whether bin has reached the threshold
+        if (bin.fillLevel < FILL_LEVEL_THRESHOLD) {
+            return null;
+        }
+
+        // Check whether an active job already exists
+        const existingJob = await Job.findOne({
+            bin: bin._id,
+            status: {
+                $in: ["Pending", "Assigned", "Accepted"],
+            },
+        });
+
+        // If active job exists, update its latest fill level
+        if (existingJob) {
+            existingJob.fillLevel = bin.fillLevel;
+
+            // Also keep the latest bin location
+            existingJob.binLocation = {
+                latitude: bin.latitude,
+                longitude: bin.longitude,
+            };
+
+            await existingJob.save();
+
+            console.log(
+                `Existing job updated for ${bin.binId} - Fill Level: ${bin.fillLevel}%`
+            );
+
+            return existingJob;
+        }
+
+        // Create new collection job
+        const job = await Job.create({
+            bin: bin._id,
+            binLocation: {
+                latitude: bin.latitude,
+                longitude: bin.longitude,
+            },
+            fillLevel: bin.fillLevel,
+            status: "Pending",
+        });
+
+        console.log(
+            `Garbage collection job created automatically for ${bin.binId}`
+        );
+
+        return job;
+
+    } catch (error) {
+        console.error(
+            "Automatic job creation error:",
+            error
+        );
+
+        throw error;
     }
 };
 

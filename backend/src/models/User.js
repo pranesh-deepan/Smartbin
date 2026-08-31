@@ -43,6 +43,10 @@ const userSchema = new mongoose.Schema(
                 type: Number,
                 default: null,
             },
+            lastUpdated: {
+                type: Date,
+                default: null,
+            },
         },
 
         // Worker status

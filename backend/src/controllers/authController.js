@@ -17,7 +17,7 @@ const register = async (req, res) => {
             });
         }
 
-        const { name, email, password, role } = req.body;
+        const { name, email, password, phone } = req.body;
 
         // Check Existing User
         const existingUser = await User.findOne({ email });
@@ -37,7 +37,8 @@ const register = async (req, res) => {
             name,
             email,
             password: hashedPassword,
-            role,
+            role: "Worker", // Default role is Worker
+            phone: phone || "",
         });
 
         await user.save();
@@ -204,8 +205,9 @@ const updateLocation = async (req, res) => {
         }
 
         user.currentLocation = {
-            latitude,
-            longitude,
+            latitude: Number(latitude),
+            longitude: Number(longitude),
+            lastUpdated: new Date(),
         };
 
         await user.save();
@@ -218,6 +220,67 @@ const updateLocation = async (req, res) => {
 
     } catch (error) {
         console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+};
+
+const getWorkerLocation = async (req, res) => {
+    try {
+        const { workerId } = req.params;
+
+        // Find worker
+        const worker = await User.findOne({
+            _id: workerId,
+            role: "Worker",
+            isActive: true,
+        }).select("-password");
+
+        if (!worker) {
+            return res.status(404).json({
+                success: false,
+                message: "Worker not found",
+            });
+        }
+
+        // Check whether GPS location exists
+        if (
+            !worker.currentLocation ||
+            worker.currentLocation.latitude === null ||
+            worker.currentLocation.longitude === null
+        ) {
+            return res.status(404).json({
+                success: false,
+                message: "Worker GPS location is not available",
+                worker: {
+                    id: worker._id,
+                    name: worker.name,
+                },
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Worker location fetched successfully",
+            worker: {
+                id: worker._id,
+                name: worker.name,
+                email: worker.email,
+                phone: worker.phone,
+                availability: worker.availability,
+                currentLocation: {
+                    latitude: worker.currentLocation.latitude,
+                    longitude: worker.currentLocation.longitude,
+                    lastUpdated: worker.currentLocation.lastUpdated,
+                },
+            },
+        });
+
+    } catch (error) {
+        console.error("Get worker location error:", error);
 
         return res.status(500).json({
             success: false,
@@ -269,8 +332,176 @@ const updateAvailability = async (req, res) => {
     }
 };
 
+const updateProfile = async (req, res) => {
+    try {
+
+        const { name } = req.body;
+
+        // Validate name
+        if (!name || !name.trim()) {
+            return res.status(400).json({
+                success: false,
+                message: "Name is required",
+            });
+        }
+
+        // Find currently logged-in user
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        // Update ONLY name
+        user.name = name.trim();
+
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Profile updated successfully",
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                role: user.role,
+            },
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Update profile error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+};
+
+const changePassword = async (req, res) => {
+    try {
+
+        const {
+            currentPassword,
+            newPassword
+        } = req.body;
+
+
+        // Validate fields
+
+        if (!currentPassword || !newPassword) {
+
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Current password and new password are required",
+            });
+
+        }
+
+
+        // Validate new password length
+
+        if (newPassword.length < 6) {
+
+            return res.status(400).json({
+                success: false,
+                message:
+                    "New password must be at least 6 characters",
+            });
+
+        }
+
+
+        // Find logged-in user
+
+        const user = await User.findById(
+            req.user.id
+        );
+
+
+        if (!user) {
+
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+
+        }
+
+
+        // Verify current password
+
+        const isPasswordMatch =
+            await bcrypt.compare(
+                currentPassword,
+                user.password
+            );
+
+
+        if (!isPasswordMatch) {
+
+            return res.status(401).json({
+                success: false,
+                message:
+                    "Current password is incorrect",
+            });
+
+        }
+
+
+        // Hash new password
+
+        const hashedPassword =
+            await bcrypt.hash(
+                newPassword,
+                10
+            );
+
+
+        // Update password
+
+        user.password =
+            hashedPassword;
+
+
+        await user.save();
+
+
+        return res.status(200).json({
+            success: true,
+            message:
+                "Password changed successfully",
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "Change password error:",
+            error
+        );
+
+
+        return res.status(500).json({
+            success: false,
+            message:
+                "Internal Server Error",
+        });
+
+    }
+};
+
 module.exports = {
-    register,login,getMe,updateLocation,updateAvailability,
+    register,login,getMe,updateLocation,updateAvailability,getWorkerLocation,updateProfile,changePassword
 };
 
 
