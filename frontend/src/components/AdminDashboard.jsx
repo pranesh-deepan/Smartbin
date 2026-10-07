@@ -3,6 +3,7 @@ import AdminBins from "../AdminBins";
 import WorkerTracking from "./WorkerTracking";
 import AdminMap from "./AdminMap";
 import AdminProfile from "./AdminProfile";
+import NotificationBell from "./NotificationBell";
 
 function AdminDashboard({ user, onLogout,  onUserUpdated }) {
 
@@ -760,51 +761,72 @@ useEffect(() => {
 
                 {/* TOP BAR */}
 
-                <header className="admin-topbar">
+                {/* =================================================
+    TOP BAR
+================================================= */}
 
-                    <div>
+<header className="admin-topbar">
 
-                        <h1>
-                            {trackingJob
-                                ? "Track Worker"
-                                : getPageTitle()}
-                        </h1>
-
-                        <p>
-                            SmartBin Waste Management System
-                        </p>
-
-                    </div>
-
-
-                    <button
-    type="button"
-    className="admin-profile admin-profile-button"
-    onClick={() => {
-        setShowAdminProfile(true);
-        setTrackingJob(null);
-    }}
->
-
-    <div className="admin-avatar">
-        👨‍💼
-    </div>
-
+    {/* LEFT SIDE */}
     <div>
 
-        <strong>
-            {user?.name || "Admin"}
-        </strong>
+        <h1>
+            {trackingJob
+                ? "Track Worker"
+                : getPageTitle()}
+        </h1>
 
-        <span>
-            Administrator
-        </span>
+        <p>
+            SmartBin Waste Management System
+        </p>
 
     </div>
 
-</button>
 
-                </header>
+    {/* RIGHT SIDE */}
+    <div className="admin-topbar-right">
+
+        {/* =========================================
+            NOTIFICATION BELL
+        ========================================= */}
+
+        <NotificationBell />
+
+
+        {/* =========================================
+            ADMIN PROFILE
+        ========================================= */}
+
+        <button
+            type="button"
+            className="admin-profile admin-profile-button"
+            onClick={() => {
+                setShowAdminProfile(true);
+                setTrackingJob(null);
+            }}
+        >
+
+            <div className="admin-avatar">
+                👨‍💼
+            </div>
+
+            <div>
+
+                <strong>
+                    {user?.name || "Admin"}
+                </strong>
+
+                <span>
+                    Administrator
+                </span>
+
+            </div>
+
+        </button>
+
+    </div>
+
+</header>
 
 
                 {/* =================================================

@@ -5359,3 +5359,506 @@ footer p {
     }
 
 }
+/* =========================================================
+   ADMIN TOP BAR RIGHT SIDE
+========================================================= */
+
+.admin-topbar-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+}
+
+
+/* =========================================================
+   ADMIN PROFILE BUTTON
+========================================================= */
+
+.admin-profile-button {
+    border: none;
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   NOTIFICATION + PROFILE ALIGNMENT
+========================================================= */
+
+.admin-topbar-right .notification-bell-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+/* =========================================================
+   SMARTBIN TOPBAR
+========================================================= */
+
+.admin-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 106px;
+    padding: 0 38px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    box-sizing: border-box;
+}
+
+
+/* LEFT SIDE */
+
+.topbar-title {
+    min-width: 0;
+}
+
+.topbar-title h1 {
+    margin: 0;
+    color: #111827;
+    font-size: 29px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.topbar-title p {
+    margin: 6px 0 0;
+    color: #94a3b8;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+
+/* RIGHT SIDE */
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 18px;
+    flex-shrink: 0;
+}
+
+
+/* PROFILE */
+
+.admin-profile-button {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background: transparent;
+}
+
+.admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 145px;
+    padding: 5px 0;
+    background: transparent;
+}
+
+.admin-profile:hover {
+    background: transparent;
+}
+
+.profile-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+}
+
+.profile-text strong {
+    color: #111827;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.profile-text span {
+    color: #94a3b8;
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+
+/* AVATAR */
+
+.admin-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #dcfce7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   WORKER TOPBAR
+========================================================= */
+
+.worker-topbar-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 18px;
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   NOTIFICATION BELL
+========================================================= */
+
+.notification-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin: 0;
+    z-index: 10000;
+}
+
+.notification-bell {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid #e5e7eb;
+    border-radius: 11px;
+    background: #ffffff;
+    color: #374151;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 20px;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.notification-bell:hover {
+    background: #f0fdf4;
+    border-color: #86efac;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.12);
+    transform: translateY(-1px);
+}
+
+.notification-bell:active {
+    transform: translateY(0);
+}
+
+
+/* RED BADGE */
+
+.notification-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+
+    border-radius: 20px;
+
+    background: #dc2626;
+    color: #ffffff;
+
+    border: 2px solid #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+
+/* DROPDOWN */
+
+.notification-panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+
+    width: 390px;
+    max-height: 560px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+
+    box-shadow:
+        0 20px 45px rgba(15, 23, 42, 0.18);
+
+    overflow: hidden;
+
+    z-index: 99999;
+}
+
+
+/* HEADER */
+
+.notification-header {
+    min-height: 62px;
+    padding: 14px 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom: 1px solid #eef0f2;
+    background: #ffffff;
+}
+
+.notification-header h3 {
+    margin: 0 0 3px;
+    color: #17211b;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.notification-header span {
+    color: #9ca3af;
+    font-size: 11px;
+}
+
+.notification-header button {
+    border: none;
+    background: transparent;
+    color: #15803d;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.notification-header button:hover {
+    color: #166534;
+}
+
+
+/* LIST */
+
+.notification-list {
+    max-height: 490px;
+    overflow-y: auto;
+}
+
+
+/* ITEM */
+
+.notification-item {
+    position: relative;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 11px;
+
+    padding: 15px 17px;
+
+    border-bottom: 1px solid #f0f0f0;
+
+    cursor: pointer;
+
+    transition: background 0.15s ease;
+}
+
+.notification-item:hover {
+    background: #f9fafb;
+}
+
+.notification-item.unread {
+    background: #f0fdf4;
+}
+
+
+/* ICON */
+
+.notification-icon {
+    width: 36px;
+    height: 36px;
+
+    flex-shrink: 0;
+
+    border-radius: 9px;
+
+    background: #ecfdf5;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 17px;
+}
+
+
+/* CONTENT */
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-content strong {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #17211b;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.notification-content p {
+    margin: 0 0 5px;
+
+    color: #4b5563;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.notification-content small {
+    color: #9ca3af;
+    font-size: 10px;
+}
+
+
+/* UNREAD DOT */
+
+.notification-dot {
+    width: 7px;
+    height: 7px;
+
+    flex-shrink: 0;
+
+    margin-top: 5px;
+
+    border-radius: 50%;
+
+    background: #16a34a;
+}
+
+
+/* JOB ACTIONS */
+
+.notification-job-actions {
+    display: flex;
+    gap: 7px;
+    margin-top: 10px;
+}
+
+.notification-job-actions button {
+    border: none;
+    border-radius: 6px;
+
+    padding: 6px 10px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.notification-accept {
+    background: #16a34a;
+    color: #ffffff;
+}
+
+.notification-accept:hover {
+    background: #15803d;
+}
+
+.notification-reject {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.notification-reject:hover {
+    background: #fecaca;
+}
+
+
+/* EMPTY */
+
+.notification-empty {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.notification-empty span {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 30px;
+}
+
+.notification-empty strong {
+    display: block;
+    color: #374151;
+    font-size: 13px;
+}
+
+.notification-empty p {
+    margin: 5px 0 0;
+    color: #9ca3af;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .admin-topbar {
+        min-height: 80px;
+        padding: 14px 18px;
+    }
+
+    .topbar-title h1 {
+        font-size: 22px;
+    }
+
+    .topbar-title p {
+        font-size: 11px;
+    }
+
+    .profile-text {
+        display: none;
+    }
+
+    .admin-profile {
+        min-width: auto;
+    }
+
+    .topbar-right,
+    .worker-topbar-right {
+        gap: 10px;
+    }
+
+    .notification-panel {
+        position: fixed;
+        top: 78px;
+        left: 12px;
+        right: 12px;
+        width: auto;
+        max-width: none;
+    }
+}   

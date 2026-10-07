@@ -2,7 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 
-const { createJob, findNearbyWorkers, autoAssignWorker, assignWorker, acceptJob, rejectJob, completeJob, getJobById, getAllJobs, } = require("../controllers/jobController");
+const { createJob, findNearbyWorkers, autoAssignWorker, assignWorker, acceptJob, rejectJob, completeJob, getJobById, getAllJobs, getMyJobs } = require("../controllers/jobController");
 const { protect, authorize } = require("../middleware/authMiddleware");
 
 // Create Garbage Collection Job - Admin Only
@@ -20,6 +20,14 @@ router.get(
     protect,
     authorize("Admin"),
     getAllJobs
+);
+
+// Get Current Worker's Jobs - Worker Only
+router.get(
+    "/my-jobs",
+    protect,
+    authorize("Worker"),
+    getMyJobs
 );
 
 // Get Job Details - Admin Only

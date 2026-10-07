@@ -1,0 +1,19 @@
+/* =====================================================
+   WORKER / ADMIN TOPBAR
+===================================================== */
+
+.worker-topbar-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+}
+
+.worker-topbar-right .notification-container {
+    margin-right: 0;
+}
+
+.worker-topbar-right .admin-profile-button {
+    border: none;
+    cursor: pointer;
+}

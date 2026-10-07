@@ -6,10 +6,10 @@ import React, {
 
 import WorkerProfile from "./WorkerProfile";
 import WorkerJobs from "./WorkerJobs";
+import NotificationBell from "./NotificationBell";
 
 const API_BASE_URL =
     "http://localhost:5000/api";
-
 
 const WorkerDashboard = ({
     user,
@@ -48,11 +48,9 @@ const WorkerDashboard = ({
     // =====================================================
 
     const getToken = () => {
-
         return localStorage.getItem(
             "smartbin_token"
         );
-
     };
 
 
@@ -73,18 +71,13 @@ const WorkerDashboard = ({
         const token = getToken();
 
         if (!token) {
-
             setError(
                 "Authentication token not found."
             );
-
             return;
-
         }
 
-
         // Update frontend immediately
-
         setLocation({
             latitude,
             longitude
@@ -95,7 +88,6 @@ const WorkerDashboard = ({
         );
 
         setError("");
-
 
         try {
 
@@ -120,25 +112,19 @@ const WorkerDashboard = ({
                     }
                 );
 
-
             const data =
                 await response.json();
 
-
             if (!response.ok) {
-
                 throw new Error(
                     data.message ||
                     "Failed to update location"
                 );
-
             }
-
 
             setLastUpdated(
                 new Date()
             );
-
 
         } catch (err) {
 
@@ -154,9 +140,7 @@ const WorkerDashboard = ({
             setError(
                 err.message
             );
-
         }
-
     };
 
 
@@ -172,7 +156,6 @@ const WorkerDashboard = ({
             "GPS Error:",
             positionError
         );
-
 
         switch (
             positionError.code
@@ -226,9 +209,7 @@ const WorkerDashboard = ({
                 setError(
                     "Unable to retrieve your location."
                 );
-
         }
-
     };
 
 
@@ -249,26 +230,17 @@ const WorkerDashboard = ({
             );
 
             return;
-
         }
 
-
         navigator.geolocation.getCurrentPosition(
-
             sendLocationToBackend,
-
             handleLocationError,
-
             {
                 enableHighAccuracy: true,
-
                 timeout: 10000,
-
                 maximumAge: 0,
             }
-
         );
-
     };
 
 
@@ -279,22 +251,15 @@ const WorkerDashboard = ({
     useEffect(() => {
 
         // First update immediately
-
         updateWorkerLocation();
 
-
         // Update every 5 seconds
-
         locationIntervalRef.current =
             setInterval(() => {
-
                 updateWorkerLocation();
-
             }, 5000);
 
-
         // Cleanup
-
         return () => {
 
             if (
@@ -304,9 +269,7 @@ const WorkerDashboard = ({
                 clearInterval(
                     locationIntervalRef.current
                 );
-
             }
-
         };
 
     }, []);
@@ -325,9 +288,7 @@ const WorkerDashboard = ({
             clearInterval(
                 locationIntervalRef.current
             );
-
         }
-
 
         if (onLogout) {
 
@@ -344,9 +305,7 @@ const WorkerDashboard = ({
             );
 
             window.location.reload();
-
         }
-
     };
 
 
@@ -366,9 +325,7 @@ const WorkerDashboard = ({
             onUserUpdated(
                 updatedWorker
             );
-
         }
-
     };
 
 
@@ -382,40 +339,31 @@ const WorkerDashboard = ({
             workerSection ===
             "dashboard"
         ) {
-
             return "Dashboard";
-
         }
 
         if (
             workerSection ===
             "jobs"
         ) {
-
             return "My Jobs";
-
         }
 
         if (
             workerSection ===
             "location"
         ) {
-
             return "Live Location";
-
         }
 
         if (
             workerSection ===
             "history"
         ) {
-
             return "Job History";
-
         }
 
         return "Dashboard";
-
     };
 
 
@@ -426,7 +374,6 @@ const WorkerDashboard = ({
     if (showWorkerProfile) {
 
         return (
-
             <div className="admin-layout">
 
                 {/* SIDEBAR */}
@@ -456,6 +403,8 @@ const WorkerDashboard = ({
 
                     <nav className="admin-nav">
 
+                        {/* DASHBOARD */}
+
                         <button
                             className="admin-nav-item"
                             onClick={() => {
@@ -467,25 +416,37 @@ const WorkerDashboard = ({
                                 setWorkerSection(
                                     "dashboard"
                                 );
-
                             }}
                         >
                             📊 Dashboard
                         </button>
 
 
-                        <button
-    className={`worker-nav-item ${
-        activeSection === "jobs"
-            ? "active"
-            : ""
-    }`}
-    onClick={() => setActiveSection("jobs")}
->
-    <span>📋</span>
-    <span>My Jobs</span>
-</button>   
+                        {/* MY JOBS */}
 
+                        <button
+                            className={`admin-nav-item ${
+                                workerSection === "jobs"
+                                    ? "active"
+                                    : ""
+                            }`}
+                            onClick={() => {
+
+                                setShowWorkerProfile(
+                                    false
+                                );
+
+                                setWorkerSection(
+                                    "jobs"
+                                );
+                            }}
+                        >
+                            <span>📋</span>
+                            <span>My Jobs</span>
+                        </button>
+
+
+                        {/* LIVE LOCATION */}
 
                         <button
                             className="admin-nav-item"
@@ -498,12 +459,13 @@ const WorkerDashboard = ({
                                 setWorkerSection(
                                     "location"
                                 );
-
                             }}
                         >
                             📍 Live Location
                         </button>
 
+
+                        {/* JOB HISTORY */}
 
                         <button
                             className="admin-nav-item"
@@ -516,7 +478,6 @@ const WorkerDashboard = ({
                                 setWorkerSection(
                                     "history"
                                 );
-
                             }}
                         >
                             🕘 Job History
@@ -543,52 +504,68 @@ const WorkerDashboard = ({
 
                     <header className="admin-topbar">
 
-                        <div>
+    {/* LEFT SIDE */}
 
-                            <h1>
-                                Worker Profile
-                            </h1>
+    <div>
 
-                            <p>
-                                SmartBin Waste Management System
-                            </p>
+        <h1>
+            {getPageTitle()}
+        </h1>
 
-                        </div>
+        <p>
+            SmartBin Waste Management System
+        </p>
+
+    </div>
 
 
-                        <button
-                            type="button"
-                            className="admin-profile admin-profile-button"
-                            onClick={() =>
-                                setShowWorkerProfile(
-                                    false
-                                )
-                            }
-                        >
+    {/* RIGHT SIDE */}
 
-                            <div className="admin-avatar">
-                                👷
-                            </div>
+    <div
+        className="worker-topbar-right"
+        style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            gap: "18px"
+        }}
+    >
+        {/* NOTIFICATION BELL */}
 
-                            <div>
+        <NotificationBell />
 
-                                <strong>
-                                    {
-                                        user?.name ||
-                                        "Worker"
-                                    }
-                                </strong>
 
-                                <span>
-                                    Worker
-                                </span>
+        {/* PROFILE */}
 
-                            </div>
+        <button
+            type="button"
+            className="admin-profile admin-profile-button"
+            onClick={() =>
+                setShowWorkerProfile(true)
+            }
+        >
 
-                        </button>
+            <div className="admin-avatar">
+                👷
+            </div>
 
-                    </header>
+            <div>
 
+                <strong>
+                    {user?.name || "Worker"}
+                </strong>
+
+                <span>
+                    Worker
+                </span>
+
+            </div>
+
+        </button>
+
+    </div>
+
+</header>
 
                     <section className="admin-content">
 
@@ -609,9 +586,7 @@ const WorkerDashboard = ({
                 </main>
 
             </div>
-
         );
-
     }
 
 
@@ -623,13 +598,11 @@ const WorkerDashboard = ({
 
         <div className="admin-layout">
 
-
             {/* =================================================
                 SIDEBAR
             ================================================= */}
 
             <aside className="admin-sidebar">
-
 
                 {/* BRAND */}
 
@@ -658,8 +631,7 @@ const WorkerDashboard = ({
 
                 <nav className="admin-nav">
 
-
-                    {/* Dashboard */}
+                    {/* DASHBOARD */}
 
                     <button
                         className={
@@ -679,7 +651,7 @@ const WorkerDashboard = ({
                     </button>
 
 
-                    {/* My Jobs */}
+                    {/* MY JOBS */}
 
                     <button
                         className={
@@ -699,7 +671,7 @@ const WorkerDashboard = ({
                     </button>
 
 
-                    {/* Live Location */}
+                    {/* LIVE LOCATION */}
 
                     <button
                         className={
@@ -719,7 +691,7 @@ const WorkerDashboard = ({
                     </button>
 
 
-                    {/* Job History */}
+                    {/* JOB HISTORY */}
 
                     <button
                         className={
@@ -761,60 +733,63 @@ const WorkerDashboard = ({
 
             <main className="admin-main">
 
-
-                {/* =================================================
-                    TOPBAR
-                ================================================= */}
+                {/* TOPBAR */}
 
                 <header className="admin-topbar">
 
-                    <div>
+    <div>
+        <h1>
+            {getPageTitle()}
+        </h1>
 
-                        <h1>
-                            {getPageTitle()}
-                        </h1>
-
-                        <p>
-                            SmartBin Waste Management System
-                        </p>
-
-                    </div>
+        <p>
+            SmartBin Waste Management System
+        </p>
+    </div>
 
 
-                    {/* PROFILE */}
+    <div
+        className="worker-topbar-right"
+        style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            gap: "18px"
+        }}
+    >
 
-                    <button
-                        type="button"
-                        className="admin-profile admin-profile-button"
-                        onClick={() =>
-                            setShowWorkerProfile(
-                                true
-                            )
-                        }
-                    >
+        <NotificationBell />
 
-                        <div className="admin-avatar">
-                            👷
-                        </div>
 
-                        <div>
+        <button
+            type="button"
+            className="admin-profile admin-profile-button"
+            onClick={() =>
+                setShowWorkerProfile(true)
+            }
+        >
 
-                            <strong>
-                                {
-                                    user?.name ||
-                                    "Worker"
-                                }
-                            </strong>
+            <div className="admin-avatar">
+                👷
+            </div>
 
-                            <span>
-                                Worker
-                            </span>
+            <div>
 
-                        </div>
+                <strong>
+                    {user?.name || "Worker"}
+                </strong>
 
-                    </button>
+                <span>
+                    Worker
+                </span>
 
-                </header>
+            </div>
+
+        </button>
+
+    </div>
+
+</header>
 
 
                 {/* =================================================
@@ -825,7 +800,6 @@ const WorkerDashboard = ({
                     "dashboard" && (
 
                     <section className="admin-content">
-
 
                         {/* PAGE HEADER */}
 
@@ -847,12 +821,9 @@ const WorkerDashboard = ({
                         </div>
 
 
-                        {/* =================================================
-                            STATISTICS
-                        ================================================= */}
+                        {/* STATISTICS */}
 
                         <div className="dashboard-stats">
-
 
                             {/* Assigned Jobs */}
 
@@ -915,9 +886,11 @@ const WorkerDashboard = ({
                                     </span>
 
                                     <strong>
-                                        {location
-                                            ? "Active"
-                                            : "Waiting"}
+                                        {
+                                            location
+                                                ? "Active"
+                                                : "Waiting"
+                                        }
                                     </strong>
 
                                 </div>
@@ -950,9 +923,7 @@ const WorkerDashboard = ({
                         </div>
 
 
-                        {/* =================================================
-                            WELCOME / QUICK INFO
-                        ================================================= */}
+                        {/* WELCOME / QUICK INFO */}
 
                         <div className="dashboard-summary-card">
 
@@ -980,7 +951,6 @@ const WorkerDashboard = ({
 
 
                             <div className="dashboard-info-grid">
-
 
                                 {/* JOBS */}
 
@@ -1056,7 +1026,6 @@ const WorkerDashboard = ({
                         </div>
 
                     </section>
-
                 )}
 
 
@@ -1069,59 +1038,9 @@ const WorkerDashboard = ({
 
                     <section className="admin-content">
 
-                        <div className="admin-page-header">
-
-                            <div>
-
-                                <h4>
-                                    Collection jobs assigned
-                                    to you.
-                                </h4>
-
-                            </div>
-
-                        </div>
-
-
-                        <div className="dashboard-summary-card">
-
-                            <div className="dashboard-summary-header">
-
-                                <div>
-
-                                    <p>
-                                        Jobs assigned by the
-                                        administrator will appear
-                                        here.
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-
-                            <div className="empty-state large">
-
-                                <span>
-                                    📦
-                                </span>
-
-                                <h3>
-                                    No jobs available
-                                </h3>
-
-                                <p>
-                                    When an admin assigns a
-                                    collection job, it will
-                                    appear here.
-                                </p>
-
-                            </div>
-
-                        </div>
+                        <WorkerJobs />
 
                     </section>
-
                 )}
 
 
@@ -1303,7 +1222,6 @@ const WorkerDashboard = ({
                         </div>
 
                     </section>
-
                 )}
 
 
@@ -1374,16 +1292,12 @@ const WorkerDashboard = ({
                         </div>
 
                     </section>
-
                 )}
 
             </main>
 
         </div>
-
     );
-
 };
-
 
 export default WorkerDashboard;

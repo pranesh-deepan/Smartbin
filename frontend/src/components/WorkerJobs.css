@@ -1,362 +1,570 @@
-/* =========================================================
+/* =====================================================
    WORKER JOBS PAGE
-========================================================= */
+===================================================== */
 
 .worker-jobs-page {
     width: 100%;
-    min-height: 100%;
-    padding: 28px 36px 40px;
+    padding: 8px 4px 30px;
     box-sizing: border-box;
-    background: #f5f7f6;
 }
 
-
-/* =========================================================
+/* =====================================================
    HEADER
-========================================================= */
+===================================================== */
 
 .worker-jobs-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 26px;
+    margin-bottom: 24px;
+}
+
+.worker-jobs-eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+    color: #16a34a;
+    margin-bottom: 5px;
 }
 
 .worker-jobs-header h2 {
-    margin: 0 0 6px;
+    margin: 0;
     font-size: 28px;
-    font-weight: 700;
-    color: #071a2f;
+    font-weight: 750;
+    color: #17211b;
 }
 
 .worker-jobs-header p {
-    margin: 0;
+    margin: 6px 0 0;
+    color: #6b7280;
     font-size: 14px;
-    color: #63748b;
 }
 
-
-/* =========================================================
-   LIVE STATUS
-========================================================= */
-
-.worker-jobs-live-status {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-
-    padding: 7px 13px;
-
-    border: 1px solid #bde5cd;
-    border-radius: 20px;
-
-    background: #ecfdf3;
-
-    color: #087443;
-
-    font-size: 12px;
-    font-weight: 600;
+.worker-refresh-button {
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #166534;
+    padding: 10px 16px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: 0.2s ease;
 }
 
-.worker-jobs-live-status span {
-    width: 7px;
-    height: 7px;
-
-    border-radius: 50%;
-
-    background: #0b9650;
+.worker-refresh-button:hover {
+    background: #f0fdf4;
+    border-color: #86efac;
 }
 
-
-/* =========================================================
+/* =====================================================
    SUMMARY
-========================================================= */
+===================================================== */
 
-.worker-jobs-summary {
+.worker-job-summary {
     display: grid;
-
-    grid-template-columns:
-        repeat(4, minmax(0, 1fr));
-
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
-
     margin-bottom: 22px;
 }
 
-
-/* =========================================================
-   SUMMARY CARD
-========================================================= */
-
-.worker-job-summary-card {
+.worker-job-stat {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 18px;
     display: flex;
     align-items: center;
-
     gap: 14px;
+    box-shadow: 0 3px 12px rgba(15, 23, 42, 0.05);
+}
 
-    padding: 18px;
-
-    background: #ffffff;
-
-    border: 1px solid #dfe5e2;
-
+.worker-job-stat-icon {
+    width: 44px;
+    height: 44px;
     border-radius: 11px;
-
-    box-shadow:
-        0 3px 10px rgba(0, 0, 0, 0.03);
-}
-
-.worker-job-summary-card span {
-    display: block;
-
-    margin-bottom: 4px;
-
-    color: #718198;
-
-    font-size: 12px;
-
-    font-weight: 500;
-}
-
-.worker-job-summary-card strong {
-    display: block;
-
-    color: #071a2f;
-
-    font-size: 24px;
-
-    line-height: 1;
-}
-
-
-/* =========================================================
-   SUMMARY ICON
-========================================================= */
-
-.worker-job-summary-icon {
-    width: 43px;
-    height: 43px;
-
-    flex-shrink: 0;
-
+    background: #ecfdf5;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 20px;
+}
 
+.accepted-icon {
+    background: #eff6ff;
+}
+
+.completed-icon {
+    background: #f0fdf4;
+    color: #15803d;
+}
+
+.worker-job-stat span {
+    display: block;
+    color: #6b7280;
+    font-size: 12px;
+    margin-bottom: 3px;
+}
+
+.worker-job-stat strong {
+    display: block;
+    font-size: 23px;
+    color: #111827;
+}
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+.worker-job-message {
+    padding: 12px 15px;
     border-radius: 9px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    font-weight: 600;
+}
 
+.worker-job-message.success {
+    background: #ecfdf5;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.worker-job-message.error {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+/* =====================================================
+   JOB LIST
+===================================================== */
+
+.worker-jobs-list {
+    display: grid;
+    gap: 18px;
+}
+
+/* =====================================================
+   JOB CARD
+===================================================== */
+
+.worker-job-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 5px 18px rgba(15, 23, 42, 0.06);
+}
+
+.worker-job-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px 22px;
+    border-bottom: 1px solid #eef0f2;
+    background: #fbfffc;
+}
+
+.worker-job-label {
+    display: block;
+    color: #6b7280;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 1.1px;
+    margin-bottom: 5px;
+}
+
+.worker-job-card-header h3 {
+    margin: 0;
+    color: #17211b;
+    font-size: 15px;
+    word-break: break-all;
+}
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.worker-job-status {
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 750;
+}
+
+.worker-job-status.assigned {
+    background: #fff7ed;
+    color: #c2410c;
+}
+
+.worker-job-status.accepted {
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.worker-job-status.completed {
+    background: #ecfdf5;
+    color: #15803d;
+}
+
+.worker-job-status.pending {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+/* =====================================================
+   BIN MAIN AREA
+===================================================== */
+
+.worker-job-main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 22px 12px;
+}
+
+.worker-bin-icon {
+    width: 48px;
+    height: 48px;
+    background: #f0fdf4;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 23px;
+}
+
+.worker-job-main h3 {
+    margin: 0;
+    color: #111827;
     font-size: 19px;
 }
 
-.worker-job-summary-icon.pending {
-    background: #fff7e8;
+/* =====================================================
+   DETAILS
+===================================================== */
+
+.worker-job-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 12px 22px 20px;
 }
 
-.worker-job-summary-icon.accepted {
-    background: #eef8f2;
+.worker-job-detail {
+    padding: 13px;
+    background: #f9fafb;
+    border: 1px solid #eef0f2;
+    border-radius: 10px;
 }
 
-.worker-job-summary-icon.progress {
-    background: #eef5ff;
+.worker-job-detail > span {
+    display: block;
+    color: #6b7280;
+    font-size: 11px;
+    margin-bottom: 7px;
 }
 
-.worker-job-summary-icon.completed {
-    background: #edf9f1;
+.worker-job-detail > strong {
+    display: block;
+    color: #1f2937;
+    font-size: 13px;
 }
 
+/* =====================================================
+   FILL LEVEL
+===================================================== */
 
-/* =========================================================
-   MAIN JOB CARD
-========================================================= */
+.worker-fill-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-.worker-jobs-card {
-    width: 100%;
+.worker-fill-value {
+    font-size: 14px !important;
+    white-space: nowrap;
+}
 
-    background: #ffffff;
+.worker-fill-value.normal {
+    color: #15803d;
+}
 
-    border: 1px solid #dfe5e2;
+.worker-fill-value.warning {
+    color: #c2410c;
+}
 
-    border-radius: 13px;
+.worker-fill-value.critical {
+    color: #dc2626;
+}
 
+.worker-fill-bar {
+    flex: 1;
+    height: 7px;
+    background: #e5e7eb;
+    border-radius: 10px;
     overflow: hidden;
-
-    box-shadow:
-        0 4px 14px rgba(0, 0, 0, 0.03);
 }
 
+.worker-fill-progress {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
 
-/* =========================================================
-   CARD HEADER
-========================================================= */
+.worker-fill-progress.normal {
+    background: #22c55e;
+}
 
-.worker-jobs-card-header {
+.worker-fill-progress.warning {
+    background: #f59e0b;
+}
+
+.worker-fill-progress.critical {
+    background: #ef4444;
+}
+
+/* =====================================================
+   ACTIONS
+===================================================== */
+
+.worker-job-actions {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 22px 25px;
-
-    border-bottom: 1px solid #e4e9e6;
+    gap: 10px;
+    padding: 16px 22px;
+    border-top: 1px solid #eef0f2;
+    background: #fafafa;
 }
 
-.worker-jobs-card-header h3 {
-    margin: 0 0 5px;
-
-    color: #071a2f;
-
-    font-size: 17px;
+.worker-job-button {
+    border: none;
+    padding: 10px 17px;
+    border-radius: 8px;
+    font-size: 12px;
     font-weight: 700;
-}
-
-.worker-jobs-card-header p {
-    margin: 0;
-
-    color: #718198;
-
-    font-size: 12px;
-}
-
-
-/* =========================================================
-   REFRESH BUTTON
-========================================================= */
-
-.worker-jobs-refresh-button {
-    height: 36px;
-
-    padding: 0 13px;
-
-    border: 1px solid #ccd6d1;
-
-    border-radius: 7px;
-
-    background: #ffffff;
-
-    color: #0b5d35;
-
-    font-size: 12px;
-
-    font-weight: 600;
-
     cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease;
+    transition: 0.2s ease;
 }
 
-.worker-jobs-refresh-button:hover {
-    background: #f0faf4;
-
-    border-color: #0b9650;
+.worker-job-button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
 }
 
+.worker-job-button.accept {
+    background: #16a34a;
+    color: white;
+}
 
-/* =========================================================
-   EMPTY STATE
-========================================================= */
+.worker-job-button.accept:hover {
+    background: #15803d;
+}
 
-.worker-jobs-empty {
-    min-height: 350px;
+.worker-job-button.reject {
+    background: #fee2e2;
+    color: #b91c1c;
+}
 
+.worker-job-button.reject:hover {
+    background: #fecaca;
+}
+
+.worker-job-button.navigate {
+    background: #2563eb;
+    color: white;
+}
+
+.worker-job-button.navigate:hover {
+    background: #1d4ed8;
+}
+
+/* =====================================================
+   AUTOMATIC COMPLETION
+===================================================== */
+
+.worker-auto-complete {
+    width: 100%;
     display: flex;
-    flex-direction: column;
-
     align-items: center;
-    justify-content: center;
-
-    text-align: center;
-
-    padding: 40px 20px;
+    gap: 12px;
+    background: #ecfdf5;
+    border: 1px solid #bbf7d0;
+    border-radius: 10px;
+    padding: 12px 15px;
 }
 
-.worker-jobs-empty-icon {
-    width: 68px;
-    height: 68px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    margin-bottom: 15px;
-
+.worker-auto-complete > span {
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-
-    background: #eef8f2;
-
-    font-size: 29px;
+    background: #22c55e;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
 }
 
-.worker-jobs-empty h3 {
+.worker-auto-complete strong {
+    display: block;
+    color: #166534;
+    font-size: 13px;
+}
+
+.worker-auto-complete p {
+    margin: 3px 0 0;
+    color: #4b5563;
+    font-size: 11px;
+}
+
+/* =====================================================
+   COMPLETED
+===================================================== */
+
+.worker-completed-state {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #15803d;
+}
+
+.worker-completed-state > span {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #dcfce7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+}
+
+.worker-completed-state strong {
+    font-size: 13px;
+}
+
+.worker-completed-state small {
+    color: #6b7280;
+    margin-left: 4px;
+}
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
+.worker-no-jobs {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 55px 25px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+}
+
+.worker-no-jobs-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: #ecfdf5;
+    color: #16a34a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.worker-no-jobs h3 {
     margin: 0 0 7px;
-
-    color: #172b43;
-
-    font-size: 16px;
-
-    font-weight: 700;
+    color: #17211b;
 }
 
-.worker-jobs-empty p {
-    max-width: 380px;
-
+.worker-no-jobs p {
     margin: 0;
-
-    color: #718198;
-
-    font-size: 12px;
-
-    line-height: 1.6;
+    color: #6b7280;
+    font-size: 13px;
 }
 
+/* =====================================================
+   LOADING
+===================================================== */
 
-/* =========================================================
+.worker-jobs-loading {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 55px 25px;
+    text-align: center;
+}
+
+.worker-loading-spinner {
+    font-size: 32px;
+    color: #16a34a;
+    animation: worker-spin 1s linear infinite;
+}
+
+.worker-jobs-loading h3 {
+    margin: 12px 0 5px;
+}
+
+.worker-jobs-loading p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+@keyframes worker-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =====================================================
    RESPONSIVE
-========================================================= */
+===================================================== */
 
-@media (max-width: 1000px) {
+@media (max-width: 850px) {
 
-    .worker-jobs-summary {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
+    .worker-job-summary {
+        grid-template-columns: 1fr;
     }
 
-}
-
-
-@media (max-width: 700px) {
-
-    .worker-jobs-page {
-        padding: 22px 18px 30px;
-    }
-
-    .worker-jobs-header {
-        align-items: flex-start;
-
-        flex-direction: column;
-
-        gap: 14px;
-    }
-
-    .worker-jobs-summary {
+    .worker-job-details {
         grid-template-columns: 1fr;
     }
 
 }
 
+@media (max-width: 600px) {
 
-@media (max-width: 480px) {
-
-    .worker-jobs-page {
-        padding: 18px 12px 25px;
+    .worker-jobs-header {
+        align-items: flex-start;
+        gap: 12px;
     }
 
-    .worker-jobs-card-header {
-        align-items: flex-start;
+    .worker-jobs-header h2 {
+        font-size: 23px;
+    }
 
+    .worker-job-card-header {
         flex-direction: column;
-
         gap: 12px;
+    }
+
+    .worker-job-actions {
+        flex-direction: column;
+    }
+
+    .worker-job-button {
+        width: 100%;
     }
 
 }
