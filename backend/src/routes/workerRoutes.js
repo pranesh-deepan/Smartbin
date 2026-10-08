@@ -6,6 +6,7 @@ const {
     getAllWorkers,
     getWorkerById,
     updateWorkerStatus,
+    deleteWorker,
 } = require("../controllers/workerController");
 
 const {
@@ -50,6 +51,19 @@ router.put(
     protect,
     authorize("Admin"),
     updateWorkerStatus
+);
+
+
+// =====================================================
+// DELETE WORKER
+// Admin Only
+// =====================================================
+
+router.delete(
+    "/:workerId",
+    protect,
+    authorize("Admin"),
+    deleteWorker
 );
 
 

@@ -7,9 +7,10 @@ import React, {
 import WorkerProfile from "./WorkerProfile";
 import WorkerJobs from "./WorkerJobs";
 import NotificationBell from "./NotificationBell";
+import WorkerNavigation from "./WorkerNavigation";
+import WorkerJobHistory from "./WorkerJobHistory";
 
-const API_BASE_URL =
-    "http://localhost:5000/api";
+const API_BASE_URL = "http://localhost:5000/api";
 
 const WorkerDashboard = ({
     user,
@@ -39,7 +40,23 @@ const WorkerDashboard = ({
     const [showWorkerProfile, setShowWorkerProfile] =
         useState(false);
 
+    // =====================================================
+    // JOB STATE
+    // =====================================================
+
+    const [workerJobs, setWorkerJobs] =
+        useState([]);
+
+    const [jobsLoading, setJobsLoading] =
+        useState(true);
+
+    const [jobsError, setJobsError] =
+        useState("");
+
     const locationIntervalRef =
+        useRef(null);
+
+    const jobsIntervalRef =
         useRef(null);
 
 
@@ -48,9 +65,7 @@ const WorkerDashboard = ({
     // =====================================================
 
     const getToken = () => {
-        return localStorage.getItem(
-            "smartbin_token"
-        );
+        return localStorage.getItem("smartbin_token");
     };
 
 
@@ -58,9 +73,7 @@ const WorkerDashboard = ({
     // SEND GPS LOCATION TO BACKEND
     // =====================================================
 
-    const sendLocationToBackend = async (
-        position
-    ) => {
+    const sendLocationToBackend = async (position) => {
 
         const latitude =
             position.coords.latitude;
@@ -71,13 +84,16 @@ const WorkerDashboard = ({
         const token = getToken();
 
         if (!token) {
+
             setError(
                 "Authentication token not found."
             );
+
             return;
         }
 
         // Update frontend immediately
+
         setLocation({
             latitude,
             longitude
@@ -107,7 +123,7 @@ const WorkerDashboard = ({
 
                         body: JSON.stringify({
                             latitude,
-                            longitude,
+                            longitude
                         }),
                     }
                 );
@@ -116,6 +132,7 @@ const WorkerDashboard = ({
                 await response.json();
 
             if (!response.ok) {
+
                 throw new Error(
                     data.message ||
                     "Failed to update location"
@@ -238,7 +255,7 @@ const WorkerDashboard = ({
             {
                 enableHighAccuracy: true,
                 timeout: 10000,
-                maximumAge: 0,
+                maximumAge: 0
             }
         );
     };
@@ -251,15 +268,21 @@ const WorkerDashboard = ({
     useEffect(() => {
 
         // First update immediately
+
         updateWorkerLocation();
 
         // Update every 5 seconds
+
         locationIntervalRef.current =
             setInterval(() => {
+
                 updateWorkerLocation();
+
             }, 5000);
 
+
         // Cleanup
+
         return () => {
 
             if (
@@ -276,6 +299,242 @@ const WorkerDashboard = ({
 
 
     // =====================================================
+    // FETCH WORKER JOBS
+    // =====================================================
+
+    const fetchWorkerJobs = async () => {
+
+        const token = getToken();
+
+        if (!token) {
+
+            setJobsError(
+                "Authentication token not found."
+            );
+
+            setJobsLoading(false);
+
+            return;
+        }
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE_URL}/jobs/my-jobs`,
+                    {
+                        method: "GET",
+
+                        headers: {
+                            Authorization:
+                                `Bearer ${token}`,
+
+                            "Content-Type":
+                                "application/json"
+                        }
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "Failed to fetch worker jobs"
+                );
+            }
+
+            const jobs =
+                Array.isArray(data)
+                    ? data
+                    : Array.isArray(data.jobs)
+                        ? data.jobs
+                        : [];
+
+            setWorkerJobs(jobs);
+
+            setJobsError("");
+
+        } catch (err) {
+
+            console.error(
+                "Worker jobs fetch error:",
+                err
+            );
+
+            setJobsError(
+                err.message ||
+                "Unable to load jobs"
+            );
+
+        } finally {
+
+            setJobsLoading(false);
+        }
+    };
+
+
+    // =====================================================
+    // JOB AUTO REFRESH
+    // =====================================================
+
+    useEffect(() => {
+
+        // Initial fetch
+
+        fetchWorkerJobs();
+
+        // Refresh every 5 seconds
+
+        jobsIntervalRef.current =
+            setInterval(() => {
+
+                fetchWorkerJobs();
+
+            }, 5000);
+
+
+        return () => {
+
+            if (
+                jobsIntervalRef.current
+            ) {
+
+                clearInterval(
+                    jobsIntervalRef.current
+                );
+            }
+        };
+
+    }, []);
+
+
+    // =====================================================
+    // JOB STATISTICS
+    // =====================================================
+
+    const getJobStatus = (job) => {
+
+        return String(
+            job?.status || ""
+        ).toLowerCase();
+    };
+
+
+    const assignedJobs =
+        workerJobs.filter((job) => {
+
+            const status =
+                getJobStatus(job);
+
+            return (
+                status === "assigned" ||
+                status === "accepted"
+            );
+
+        });
+
+
+    const acceptedJobs =
+        workerJobs.filter((job) => {
+
+            return (
+                getJobStatus(job) ===
+                "accepted"
+            );
+
+        });
+
+
+    const completedJobs =
+        workerJobs.filter((job) => {
+
+            return (
+                getJobStatus(job) ===
+                "completed"
+            );
+
+        });
+
+
+    // =====================================================
+    // CURRENT ASSIGNMENT
+    // =====================================================
+
+    const currentJob =
+        acceptedJobs[0] ||
+        workerJobs.find((job) =>
+            getJobStatus(job) === "assigned"
+        );
+
+
+    const currentJobIsAccepted =
+        currentJob &&
+        getJobStatus(currentJob) === "accepted";
+
+
+    // =====================================================
+    // CURRENT BIN DETAILS
+    // =====================================================
+
+    const currentBin =
+        currentJob?.bin || null;
+
+
+    const currentBinId =
+        currentBin?.binId ||
+        currentJob?.binId ||
+        currentJob?.binLocation?.binId ||
+        "N/A";
+
+
+    const currentBinName =
+        currentBin?.name ||
+        "SmartBin";
+
+
+    const currentBinLocation =
+        currentBin?.location ||
+        currentJob?.binLocation?.location ||
+        "Location unavailable";
+
+
+    const currentFillLevel =
+        currentJob?.fillLevel ??
+        currentBin?.fillLevel ??
+        currentJob?.binLocation?.fillLevel ??
+        0;
+
+
+    // =====================================================
+    // WORKER AVAILABILITY
+    // =====================================================
+
+    const workerAvailability =
+        user?.availability ||
+        user?.status ||
+        (
+            acceptedJobs.length > 0
+                ? "Busy"
+                : "Available"
+        );
+
+
+    const normalizedAvailability =
+        String(
+            workerAvailability
+        ).toLowerCase();
+
+
+    const availabilityLabel =
+        normalizedAvailability === "busy"
+            ? "Busy"
+            : "Available";
+
+
+    // =====================================================
     // LOGOUT
     // =====================================================
 
@@ -287,6 +546,15 @@ const WorkerDashboard = ({
 
             clearInterval(
                 locationIntervalRef.current
+            );
+        }
+
+        if (
+            jobsIntervalRef.current
+        ) {
+
+            clearInterval(
+                jobsIntervalRef.current
             );
         }
 
@@ -339,6 +607,7 @@ const WorkerDashboard = ({
             workerSection ===
             "dashboard"
         ) {
+
             return "Dashboard";
         }
 
@@ -346,20 +615,23 @@ const WorkerDashboard = ({
             workerSection ===
             "jobs"
         ) {
+
             return "My Jobs";
         }
 
         if (
             workerSection ===
-            "location"
+            "navigation"
         ) {
-            return "Live Location";
+
+            return "Navigation";
         }
 
         if (
             workerSection ===
             "history"
         ) {
+
             return "Job History";
         }
 
@@ -374,6 +646,7 @@ const WorkerDashboard = ({
     if (showWorkerProfile) {
 
         return (
+
             <div className="admin-layout">
 
                 {/* SIDEBAR */}
@@ -416,6 +689,7 @@ const WorkerDashboard = ({
                                 setWorkerSection(
                                     "dashboard"
                                 );
+
                             }}
                         >
                             📊 Dashboard
@@ -425,11 +699,14 @@ const WorkerDashboard = ({
                         {/* MY JOBS */}
 
                         <button
-                            className={`admin-nav-item ${
-                                workerSection === "jobs"
-                                    ? "active"
-                                    : ""
-                            }`}
+                            className={
+                                `admin-nav-item ${
+                                    workerSection === "jobs"
+                                        ? "active"
+                                        : ""
+                                }`
+                            }
+
                             onClick={() => {
 
                                 setShowWorkerProfile(
@@ -439,6 +716,7 @@ const WorkerDashboard = ({
                                 setWorkerSection(
                                     "jobs"
                                 );
+
                             }}
                         >
                             <span>📋</span>
@@ -446,10 +724,16 @@ const WorkerDashboard = ({
                         </button>
 
 
-                        {/* LIVE LOCATION */}
+                        {/* NAVIGATION */}
 
                         <button
-                            className="admin-nav-item"
+                            className={
+                                workerSection ===
+                                "navigation"
+                                    ? "admin-nav-item active"
+                                    : "admin-nav-item"
+                            }
+
                             onClick={() => {
 
                                 setShowWorkerProfile(
@@ -457,18 +741,25 @@ const WorkerDashboard = ({
                                 );
 
                                 setWorkerSection(
-                                    "location"
+                                    "navigation"
                                 );
+
                             }}
                         >
-                            📍 Live Location
+                            🧭 Navigation
                         </button>
 
 
                         {/* JOB HISTORY */}
 
                         <button
-                            className="admin-nav-item"
+                            className={
+                                workerSection ===
+                                "history"
+                                    ? "admin-nav-item active"
+                                    : "admin-nav-item"
+                            }
+
                             onClick={() => {
 
                                 setShowWorkerProfile(
@@ -478,6 +769,7 @@ const WorkerDashboard = ({
                                 setWorkerSection(
                                     "history"
                                 );
+
                             }}
                         >
                             🕘 Job History
@@ -504,68 +796,67 @@ const WorkerDashboard = ({
 
                     <header className="admin-topbar">
 
-    {/* LEFT SIDE */}
+                        <div>
 
-    <div>
+                            <h1>
+                                Profile
+                            </h1>
 
-        <h1>
-            {getPageTitle()}
-        </h1>
+                            <p>
+                                SmartBin Waste Management System
+                            </p>
 
-        <p>
-            SmartBin Waste Management System
-        </p>
-
-    </div>
+                        </div>
 
 
-    {/* RIGHT SIDE */}
+                        <div
+                            className="worker-topbar-right"
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "flex-end",
+                                gap: "18px"
+                            }}
+                        >
 
-    <div
-        className="worker-topbar-right"
-        style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            gap: "18px"
-        }}
-    >
-        {/* NOTIFICATION BELL */}
-
-        <NotificationBell />
+                            <NotificationBell />
 
 
-        {/* PROFILE */}
+                            <button
+                                type="button"
+                                className="admin-profile admin-profile-button"
+                                onClick={() =>
+                                    setShowWorkerProfile(
+                                        false
+                                    )
+                                }
+                            >
 
-        <button
-            type="button"
-            className="admin-profile admin-profile-button"
-            onClick={() =>
-                setShowWorkerProfile(true)
-            }
-        >
+                                <div className="admin-avatar">
+                                    👷
+                                </div>
 
-            <div className="admin-avatar">
-                👷
-            </div>
+                                <div>
 
-            <div>
+                                    <strong>
+                                        {
+                                            user?.name ||
+                                            "Worker"
+                                        }
+                                    </strong>
 
-                <strong>
-                    {user?.name || "Worker"}
-                </strong>
+                                    <span>
+                                        Worker
+                                    </span>
 
-                <span>
-                    Worker
-                </span>
+                                </div>
 
-            </div>
+                            </button>
 
-        </button>
+                        </div>
 
-    </div>
+                    </header>
 
-</header>
 
                     <section className="admin-content">
 
@@ -671,23 +962,23 @@ const WorkerDashboard = ({
                     </button>
 
 
-                    {/* LIVE LOCATION */}
+                    {/* NAVIGATION */}
 
                     <button
                         className={
                             workerSection ===
-                            "location"
+                            "navigation"
                                 ? "admin-nav-item active"
                                 : "admin-nav-item"
                         }
 
                         onClick={() =>
                             setWorkerSection(
-                                "location"
+                                "navigation"
                             )
                         }
                     >
-                        📍 Live Location
+                        🧭 Navigation
                     </button>
 
 
@@ -737,212 +1028,96 @@ const WorkerDashboard = ({
 
                 <header className="admin-topbar">
 
-    <div>
-        <h1>
-            {getPageTitle()}
-        </h1>
+                    <div>
 
-        <p>
-            SmartBin Waste Management System
-        </p>
-    </div>
+                        <h1>
+                            {getPageTitle()}
+                        </h1>
 
+                        <p>
+                            SmartBin Waste Management System
+                        </p>
 
-    <div
-        className="worker-topbar-right"
-        style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            gap: "18px"
-        }}
-    >
-
-        <NotificationBell />
+                    </div>
 
 
-        <button
-            type="button"
-            className="admin-profile admin-profile-button"
-            onClick={() =>
-                setShowWorkerProfile(true)
-            }
-        >
+                    <div
+                        className="worker-topbar-right"
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "flex-end",
+                            gap: "18px"
+                        }}
+                    >
 
-            <div className="admin-avatar">
-                👷
-            </div>
+                        {/* NOTIFICATION BELL */}
 
-            <div>
+                        <NotificationBell />
 
-                <strong>
-                    {user?.name || "Worker"}
-                </strong>
 
-                <span>
-                    Worker
-                </span>
+                        {/* PROFILE */}
 
-            </div>
+                        <button
+                            type="button"
+                            className="admin-profile admin-profile-button"
 
-        </button>
+                            onClick={() =>
+                                setShowWorkerProfile(
+                                    true
+                                )
+                            }
+                        >
 
-    </div>
+                            <div className="admin-avatar">
+                                👷
+                            </div>
 
-</header>
+                            <div>
+
+                                <strong>
+                                    {
+                                        user?.name ||
+                                        "Worker"
+                                    }
+                                </strong>
+
+                                <span>
+                                    Worker
+                                </span>
+
+                            </div>
+
+                        </button>
+
+                    </div>
+
+                </header>
 
 
                 {/* =================================================
                     DASHBOARD
                 ================================================= */}
 
-                {workerSection ===
+                {
+                    workerSection ===
                     "dashboard" && (
 
-                    <section className="admin-content">
+                        <section className="admin-content">
 
-                        {/* PAGE HEADER */}
+                            {/* PAGE HEADER */}
 
-                        <div className="admin-page-header">
-
-                            <div>
-
-                                <h2>
-                                    Worker Dashboard
-                                </h2>
-
-                                <p>
-                                    Overview of your SmartBin
-                                    collection activities.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                        {/* STATISTICS */}
-
-                        <div className="dashboard-stats">
-
-                            {/* Assigned Jobs */}
-
-                            <div className="dashboard-stat-card">
-
-                                <div className="dashboard-stat-icon jobs">
-                                    📋
-                                </div>
+                            <div className="admin-page-header">
 
                                 <div>
 
-                                    <span>
-                                        Assigned Jobs
-                                    </span>
-
-                                    <strong>
-                                        0
-                                    </strong>
-
-                                </div>
-
-                            </div>
-
-
-                            {/* Completed Jobs */}
-
-                            <div className="dashboard-stat-card">
-
-                                <div className="dashboard-stat-icon normal">
-                                    ✅
-                                </div>
-
-                                <div>
-
-                                    <span>
-                                        Completed Jobs
-                                    </span>
-
-                                    <strong>
-                                        0
-                                    </strong>
-
-                                </div>
-
-                            </div>
-
-
-                            {/* GPS */}
-
-                            <div className="dashboard-stat-card">
-
-                                <div className="dashboard-stat-icon workers">
-                                    📍
-                                </div>
-
-                                <div>
-
-                                    <span>
-                                        GPS Status
-                                    </span>
-
-                                    <strong>
-                                        {
-                                            location
-                                                ? "Active"
-                                                : "Waiting"
-                                        }
-                                    </strong>
-
-                                </div>
-
-                            </div>
-
-
-                            {/* Availability */}
-
-                            <div className="dashboard-stat-card">
-
-                                <div className="dashboard-stat-icon total">
-                                    👷
-                                </div>
-
-                                <div>
-
-                                    <span>
-                                        Availability
-                                    </span>
-
-                                    <strong>
-                                        Available
-                                    </strong>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        {/* WELCOME / QUICK INFO */}
-
-                        <div className="dashboard-summary-card">
-
-                            <div className="dashboard-summary-header">
-
-                                <div>
-
-                                    <h3>
-                                        Welcome,{" "}
-                                        {
-                                            user?.name ||
-                                            "Worker"
-                                        } 👋
-                                    </h3>
+                                    <h2>
+                                        Worker Dashboard
+                                    </h2>
 
                                     <p>
-                                        Manage your assigned
-                                        collection jobs and
-                                        monitor your live location.
+                                        Overview of your SmartBin
+                                        collection activities.
                                     </p>
 
                                 </div>
@@ -950,72 +1125,112 @@ const WorkerDashboard = ({
                             </div>
 
 
-                            <div className="dashboard-info-grid">
+                            {/* =================================================
+                                STATISTICS
+                            ================================================= */}
 
-                                {/* JOBS */}
+                            <div className="dashboard-stats">
 
-                                <div className="dashboard-info-card">
+                                {/* ASSIGNED JOBS */}
 
-                                    <div className="dashboard-info-icon">
+                                <div className="dashboard-stat-card">
+
+                                    <div className="dashboard-stat-icon jobs">
                                         📋
                                     </div>
 
                                     <div>
 
-                                        <h3>
-                                            My Jobs
-                                        </h3>
+                                        <span>
+                                            Assigned Jobs
+                                        </span>
 
-                                        <p>
-                                            View collection jobs
-                                            assigned to you and
-                                            update their status.
-                                        </p>
-
-                                        <button
-                                            onClick={() =>
-                                                setWorkerSection(
-                                                    "jobs"
-                                                )
+                                        <strong>
+                                            {
+                                                jobsLoading
+                                                    ? "..."
+                                                    : assignedJobs.length
                                             }
-                                        >
-                                            View Jobs →
-                                        </button>
+                                        </strong>
 
                                     </div>
 
                                 </div>
 
 
-                                {/* LOCATION */}
+                                {/* COMPLETED JOBS */}
 
-                                <div className="dashboard-info-card">
+                                <div className="dashboard-stat-card">
 
-                                    <div className="dashboard-info-icon">
+                                    <div className="dashboard-stat-icon normal">
+                                        ✅
+                                    </div>
+
+                                    <div>
+
+                                        <span>
+                                            Completed Jobs
+                                        </span>
+
+                                        <strong>
+                                            {
+                                                jobsLoading
+                                                    ? "..."
+                                                    : completedJobs.length
+                                            }
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+
+                                {/* GPS */}
+
+                                <div className="dashboard-stat-card">
+
+                                    <div className="dashboard-stat-icon workers">
                                         📍
                                     </div>
 
                                     <div>
 
-                                        <h3>
-                                            Live Location
-                                        </h3>
+                                        <span>
+                                            GPS Status
+                                        </span>
 
-                                        <p>
-                                            Your GPS location is
-                                            automatically updated
-                                            every 5 seconds.
-                                        </p>
-
-                                        <button
-                                            onClick={() =>
-                                                setWorkerSection(
-                                                    "location"
-                                                )
+                                        <strong>
+                                            {
+                                                location
+                                                    ? "Active"
+                                                    : "Waiting"
                                             }
-                                        >
-                                            View Location →
-                                        </button>
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+
+                                {/* AVAILABILITY */}
+
+                                <div className="dashboard-stat-card">
+
+                                    <div className="dashboard-stat-icon total">
+                                        👷
+                                    </div>
+
+                                    <div>
+
+                                        <span>
+                                            Availability
+                                        </span>
+
+                                        <strong>
+                                            {
+                                                availabilityLabel
+                                            }
+                                        </strong>
 
                                     </div>
 
@@ -1023,281 +1238,599 @@ const WorkerDashboard = ({
 
                             </div>
 
-                        </div>
 
-                    </section>
-                )}
+                            {/* =================================================
+                                JOB FETCH ERROR
+                            ================================================= */}
+
+                            {
+                                jobsError && (
+
+                                    <div
+                                        style={{
+                                            marginTop: "15px",
+                                            padding: "12px 16px",
+                                            borderRadius: "8px",
+                                            background: "#fff3f3",
+                                            color: "#c62828",
+                                            border: "1px solid #ffcdd2"
+                                        }}
+                                    >
+                                        ⚠ {jobsError}
+                                    </div>
+
+                                )
+                            }
+
+
+                            {/* =================================================
+                                CURRENT ASSIGNMENT
+                            ================================================= */}
+
+                            <div
+                                className="dashboard-summary-card"
+                                style={{
+                                    marginTop: "20px"
+                                }}
+                            >
+
+                                <div className="dashboard-summary-header">
+
+                                    <div>
+
+                                        <h3>
+                                            Current Assignment
+                                        </h3>
+
+                                        <p>
+                                            Your current SmartBin
+                                            collection assignment.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+
+                                {
+                                    jobsLoading ? (
+
+                                        <div
+                                            style={{
+                                                padding: "25px",
+                                                textAlign: "center"
+                                            }}
+                                        >
+                                            Loading current assignment...
+                                        </div>
+
+                                    ) : currentJob ? (
+
+                                        <div
+                                            className="dashboard-info-grid"
+                                        >
+
+                                            {/* BIN */}
+
+                                            <div className="dashboard-info-card">
+
+                                                <div className="dashboard-info-icon">
+                                                    🗑️
+                                                </div>
+
+                                                <div>
+
+                                                    <h3>
+                                                        {currentBinName}
+                                                    </h3>
+
+                                                    <p>
+                                                        Bin ID:{" "}
+                                                        <strong>
+                                                            {currentBinId}
+                                                        </strong>
+                                                    </p>
+
+                                                    <p>
+                                                        📍{" "}
+                                                        {currentBinLocation}
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            {/* STATUS */}
+
+                                            <div className="dashboard-info-card">
+
+                                                <div className="dashboard-info-icon">
+                                                    📊
+                                                </div>
+
+                                                <div>
+
+                                                    <h3>
+                                                        Collection Status
+                                                    </h3>
+
+                                                    <p>
+
+                                                        Status:{" "}
+
+                                                        <strong>
+                                                            {
+                                                                currentJobIsAccepted
+                                                                    ? "Accepted"
+                                                                    : "Assigned"
+                                                            }
+                                                        </strong>
+
+                                                    </p>
+
+                                                    <p>
+
+                                                        Fill Level:{" "}
+
+                                                        <strong>
+                                                            {currentFillLevel}%
+                                                        </strong>
+
+                                                    </p>
+
+
+                                                    <button
+                                                        onClick={() => {
+
+                                                            if (
+                                                                currentJobIsAccepted
+                                                            ) {
+
+                                                                setWorkerSection(
+                                                                    "navigation"
+                                                                );
+
+                                                            } else {
+
+                                                                setWorkerSection(
+                                                                    "jobs"
+                                                                );
+
+                                                            }
+
+                                                        }}
+                                                    >
+
+                                                        {
+                                                            currentJobIsAccepted
+                                                                ? "Continue Navigation →"
+                                                                : "View Job →"
+                                                        }
+
+                                                    </button>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    ) : (
+
+                                        <div
+                                            style={{
+                                                padding: "30px",
+                                                textAlign: "center"
+                                            }}
+                                        >
+
+                                            <div
+                                                style={{
+                                                    fontSize: "42px",
+                                                    marginBottom: "10px"
+                                                }}
+                                            >
+                                                📭
+                                            </div>
+
+                                            <h3>
+                                                No Active Assignment
+                                            </h3>
+
+                                            <p>
+                                                You currently have no
+                                                assigned collection job.
+                                            </p>
+
+                                            <button
+                                                onClick={() =>
+                                                    setWorkerSection(
+                                                        "jobs"
+                                                    )
+                                                }
+                                            >
+                                                View My Jobs →
+                                            </button>
+
+                                        </div>
+
+                                    )
+                                }
+
+                            </div>
+
+
+                            {/* =================================================
+                                WELCOME / QUICK INFO
+                            ================================================= */}
+
+                            <div
+                                className="dashboard-summary-card"
+                                style={{
+                                    marginTop: "20px"
+                                }}
+                            >
+
+                                <div className="dashboard-summary-header">
+
+                                    <div>
+
+                                        <h3>
+                                            Welcome,{" "}
+                                            {
+                                                user?.name ||
+                                                "Worker"
+                                            } 👋
+                                        </h3>
+
+                                        <p>
+                                            Manage your assigned
+                                            collection jobs and
+                                            monitor your GPS
+                                            location.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div className="dashboard-info-grid">
+
+                                    {/* JOBS */}
+
+                                    <div className="dashboard-info-card">
+
+                                        <div className="dashboard-info-icon">
+                                            📋
+                                        </div>
+
+                                        <div>
+
+                                            <h3>
+                                                My Jobs
+                                            </h3>
+
+                                            <p>
+                                                View collection jobs
+                                                assigned to you and
+                                                update their status.
+                                            </p>
+
+                                            <button
+                                                onClick={() =>
+                                                    setWorkerSection(
+                                                        "jobs"
+                                                    )
+                                                }
+                                            >
+                                                View Jobs →
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {/* NAVIGATION */}
+
+                                    <div className="dashboard-info-card">
+
+                                        <div className="dashboard-info-icon">
+                                            🧭
+                                        </div>
+
+                                        <div>
+
+                                            <h3>
+                                                Navigation
+                                            </h3>
+
+                                            <p>
+                                                Navigate to your accepted
+                                                SmartBin collection location
+                                                using live road guidance.
+                                            </p>
+
+                                            <button
+                                                onClick={() =>
+                                                    setWorkerSection(
+                                                        "navigation"
+                                                    )
+                                                }
+                                            >
+                                                Start Navigation →
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {/* JOB HISTORY */}
+
+                                    <div className="dashboard-info-card">
+
+                                        <div className="dashboard-info-icon">
+                                            🕘
+                                        </div>
+
+                                        <div>
+
+                                            <h3>
+                                                Job History
+                                            </h3>
+
+                                            <p>
+                                                View your previously
+                                                completed SmartBin
+                                                collection jobs.
+                                            </p>
+
+                                            <button
+                                                onClick={() =>
+                                                    setWorkerSection(
+                                                        "history"
+                                                    )
+                                                }
+                                            >
+                                                View History →
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            {/* =================================================
+                                GPS INFORMATION
+                            ================================================= */}
+
+                            <div
+                                className="dashboard-summary-card"
+                                style={{
+                                    marginTop: "20px"
+                                }}
+                            >
+
+                                <div className="dashboard-summary-header">
+
+                                    <div>
+
+                                        <h3>
+                                            📍 GPS Tracking
+                                        </h3>
+
+                                        <p>
+                                            Your location is automatically
+                                            sent to SmartBin every 5 seconds.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div
+                                    style={{
+                                        display: "grid",
+                                        gridTemplateColumns:
+                                            "repeat(auto-fit, minmax(200px, 1fr))",
+                                        gap: "15px"
+                                    }}
+                                >
+
+                                    <div
+                                        style={{
+                                            padding: "15px",
+                                            borderRadius: "10px",
+                                            background: "#f7faf8"
+                                        }}
+                                    >
+
+                                        <strong>
+                                            Status
+                                        </strong>
+
+                                        <p
+                                            style={{
+                                                marginBottom: 0
+                                            }}
+                                        >
+                                            {locationStatus}
+                                        </p>
+
+                                    </div>
+
+
+                                    <div
+                                        style={{
+                                            padding: "15px",
+                                            borderRadius: "10px",
+                                            background: "#f7faf8"
+                                        }}
+                                    >
+
+                                        <strong>
+                                            Latitude
+                                        </strong>
+
+                                        <p
+                                            style={{
+                                                marginBottom: 0
+                                            }}
+                                        >
+                                            {
+                                                location
+                                                    ? location.latitude.toFixed(6)
+                                                    : "Waiting..."
+                                            }
+                                        </p>
+
+                                    </div>
+
+
+                                    <div
+                                        style={{
+                                            padding: "15px",
+                                            borderRadius: "10px",
+                                            background: "#f7faf8"
+                                        }}
+                                    >
+
+                                        <strong>
+                                            Longitude
+                                        </strong>
+
+                                        <p
+                                            style={{
+                                                marginBottom: 0
+                                            }}
+                                        >
+                                            {
+                                                location
+                                                    ? location.longitude.toFixed(6)
+                                                    : "Waiting..."
+                                            }
+                                        </p>
+
+                                    </div>
+
+
+                                    <div
+                                        style={{
+                                            padding: "15px",
+                                            borderRadius: "10px",
+                                            background: "#f7faf8"
+                                        }}
+                                    >
+
+                                        <strong>
+                                            Last Updated
+                                        </strong>
+
+                                        <p
+                                            style={{
+                                                marginBottom: 0
+                                            }}
+                                        >
+                                            {
+                                                lastUpdated
+                                                    ? lastUpdated.toLocaleTimeString()
+                                                    : "Waiting..."
+                                            }
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+
+                                {
+                                    error && (
+
+                                        <div
+                                            style={{
+                                                marginTop: "15px",
+                                                padding: "12px",
+                                                borderRadius: "8px",
+                                                background: "#fff3f3",
+                                                color: "#c62828"
+                                            }}
+                                        >
+                                            ⚠ {error}
+                                        </div>
+
+                                    )
+                                }
+
+                            </div>
+
+                        </section>
+                    )
+                }
 
 
                 {/* =================================================
                     MY JOBS
                 ================================================= */}
 
-                {workerSection ===
+                {
+                    workerSection ===
                     "jobs" && (
 
-                    <section className="admin-content">
+                        <section className="admin-content">
 
-                        <WorkerJobs />
+                            <WorkerJobs />
 
-                    </section>
-                )}
+                        </section>
+                    )
+                }
 
 
                 {/* =================================================
-                    LIVE LOCATION
+                    WORKER NAVIGATION
                 ================================================= */}
 
-                {workerSection ===
-                    "location" && (
+                {
+                    workerSection ===
+                    "navigation" && (
 
-                    <section className="admin-content">
+                        <section className="admin-content">
 
-                        <div className="admin-page-header">
+                            <WorkerNavigation />
 
-                            <div>
-
-                                <h2>
-                                    Live Location
-                                </h2>
-
-                                <p>
-                                    Your current GPS location
-                                    is automatically synchronized
-                                    with SmartBin.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                        {/* GPS CARD */}
-
-                        <div className="dashboard-summary-card">
-
-                            <div className="dashboard-summary-header">
-
-                                <div>
-
-                                    <h3>
-                                        📍 GPS Location
-                                    </h3>
-
-                                    <p>
-                                        Location updates every
-                                        5 seconds.
-                                    </p>
-
-                                </div>
-
-
-                                <div
-                                    className={
-                                        `gps-status ${
-                                            location
-                                                ? "gps-active"
-                                                : "gps-inactive"
-                                        }`
-                                    }
-                                >
-
-                                    <span className="gps-status-dot"></span>
-
-                                    {
-                                        location
-                                            ? "GPS Active"
-                                            : "GPS Waiting"
-                                    }
-
-                                </div>
-
-                            </div>
-
-
-                            {location ? (
-
-                                <div className="gps-details">
-
-                                    <div className="gps-detail-item">
-
-                                        <span>
-                                            Latitude
-                                        </span>
-
-                                        <strong>
-                                            {
-                                                location.latitude.toFixed(
-                                                    6
-                                                )
-                                            }
-                                        </strong>
-
-                                    </div>
-
-
-                                    <div className="gps-detail-item">
-
-                                        <span>
-                                            Longitude
-                                        </span>
-
-                                        <strong>
-                                            {
-                                                location.longitude.toFixed(
-                                                    6
-                                                )
-                                            }
-                                        </strong>
-
-                                    </div>
-
-
-                                    <div className="gps-detail-item">
-
-                                        <span>
-                                            Last Backend Update
-                                        </span>
-
-                                        <strong>
-                                            {
-                                                lastUpdated
-                                                    ? lastUpdated.toLocaleTimeString()
-                                                    : "Updating..."
-                                            }
-                                        </strong>
-
-                                    </div>
-
-                                </div>
-
-                            ) : (
-
-                                <div className="empty-state large">
-
-                                    <span>
-                                        📡
-                                    </span>
-
-                                    <h3>
-                                        Waiting for GPS location
-                                    </h3>
-
-                                    <p>
-                                        Please allow location
-                                        access when your browser
-                                        asks for permission.
-                                    </p>
-
-                                </div>
-
-                            )}
-
-
-                            {/* STATUS */}
-
-                            <div className="gps-message">
-
-                                <strong>
-                                    Status:
-                                </strong>{" "}
-
-                                {
-                                    locationStatus
-                                }
-
-                            </div>
-
-
-                            {/* ERROR */}
-
-                            {error && (
-
-                                <div className="gps-error">
-                                    {error}
-                                </div>
-
-                            )}
-
-                        </div>
-
-                    </section>
-                )}
+                        </section>
+                    )
+                }
 
 
                 {/* =================================================
                     JOB HISTORY
                 ================================================= */}
 
-                {workerSection ===
+                {
+                    workerSection ===
                     "history" && (
 
-                    <section className="admin-content">
+                        <section className="admin-content">
 
-                        <div className="admin-page-header">
+                            <WorkerJobHistory />
 
-                            <div>
-
-                                <h2>
-                                    Job History
-                                </h2>
-
-                                <p>
-                                    View your completed
-                                    collection jobs.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                        <div className="dashboard-summary-card">
-
-                            <div className="dashboard-summary-header">
-
-                                <div>
-
-                                    <h3>
-                                        🕘 Completed Jobs
-                                    </h3>
-
-                                    <p>
-                                        Your completed collection
-                                        history will appear here.
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-
-                            <div className="empty-state large">
-
-                                <span>
-                                    🕘
-                                </span>
-
-                                <h3>
-                                    No completed jobs
-                                </h3>
-
-                                <p>
-                                    Completed collection jobs
-                                    will appear here.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    </section>
-                )}
+                        </section>
+                    )
+                }
 
             </main>
 
         </div>
     );
 };
+
 
 export default WorkerDashboard;

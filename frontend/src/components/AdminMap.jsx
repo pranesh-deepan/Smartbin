@@ -17,7 +17,7 @@ import L from "leaflet";
 
 import "leaflet/dist/leaflet.css";
 
-
+import "./AdminMap.css";
 // =====================================================
 // LEAFLET DEFAULT MARKER FIX
 // =====================================================

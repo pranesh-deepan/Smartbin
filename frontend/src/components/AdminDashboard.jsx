@@ -12,6 +12,7 @@ function AdminDashboard({ user, onLogout,  onUserUpdated }) {
     // =====================================================
 
     const [adminSection, setAdminSection] = useState("dashboard");
+    const [mobileSidebarOpen, setMobileSidebarOpen] =useState(false);
 
     // =====================================================
 // ADMIN PROFILE
@@ -61,6 +62,7 @@ function AdminDashboard({ user, onLogout,  onUserUpdated }) {
     const [workerLoading, setWorkerLoading] = useState(false);
     const [workerMessage, setWorkerMessage] = useState("");
     const [workerMessageType, setWorkerMessageType] = useState("");
+    const [deletingWorkerId, setDeletingWorkerId] = useState(null);
 
     // =====================================================
     // TOKEN
@@ -430,7 +432,85 @@ useEffect(() => {
 
         }
     };
+    // =====================================================
+// DELETE WORKER
+// =====================================================
 
+const handleDeleteWorker = async (worker) => {
+    if (!worker || !worker._id) {
+        return;
+    }
+
+    if (worker.isActive === false) {
+        setWorkerMessage("This worker is already inactive.");
+        setWorkerMessageType("error");
+        return;
+    }
+
+    const confirmed = window.confirm(
+        `Are you sure you want to delete ${worker.name}?\n\n` +
+        "The worker will be deactivated and will no longer receive new jobs."
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+        setDeletingWorkerId(worker._id);
+        setWorkerMessage("");
+        setWorkerMessageType("");
+
+        const token = getToken();
+
+        if (!token) {
+            setWorkerMessage(
+                "Authentication token not found. Please login again."
+            );
+            setWorkerMessageType("error");
+            return;
+        }
+
+        const response = await fetch(
+            `http://localhost:5000/api/workers/${worker._id}`,
+            {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message || "Failed to delete worker"
+            );
+        }
+
+        setWorkerMessage(
+            `${worker.name} deleted successfully.`
+        );
+
+        setWorkerMessageType("success");
+
+        await fetchWorkers();
+
+    } catch (error) {
+        console.error("Delete Worker Error:", error);
+
+        setWorkerMessage(
+            error.message || "Failed to delete worker."
+        );
+
+        setWorkerMessageType("error");
+
+    } finally {
+        setDeletingWorkerId(null);
+    }
+};
     // =====================================================
     // BIN STATUS COUNTS
     // =====================================================
@@ -634,124 +714,164 @@ useEffect(() => {
         <div className="admin-layout">
 
             {/* =================================================
-                SIDEBAR
-            ================================================= */}
+    SIDEBAR
+================================================= */}
 
-            <aside className="admin-sidebar">
+<aside
+    className={`admin-sidebar ${
+        mobileSidebarOpen ? "mobile-open" : ""
+    }`}
+>
 
-                <div className="admin-brand">
+    {/* MOBILE CLOSE BUTTON */}
 
-                    <div className="brand-icon">
-                        ♻
-                    </div>
-
-                    <div>
-
-                        <h2>
-                            SmartBin
-                        </h2>
-
-                        <span>
-                            Admin Panel
-                        </span>
-
-                    </div>
-
-                </div>
+    <button
+        type="button"
+        className="mobile-sidebar-close"
+        onClick={() => setMobileSidebarOpen(false)}
+        aria-label="Close navigation"
+    >
+        ✕
+    </button>
 
 
-                {/* NAVIGATION */}
+    {/* BRAND */}
 
-                <nav className="admin-nav">
+    <div className="admin-brand">
 
-                    <button
-                        className={
-                            adminSection === "dashboard"
-                                ? "admin-nav-item active"
-                                : "admin-nav-item"
-                        }
-                        onClick={() => {
-                            setTrackingJob(null);
-                            setAdminSection("dashboard");
-                        }}
-                    >
-                        📊 Dashboard
-                    </button>
+        <div className="brand-icon">
+            ♻
+        </div>
 
+        <div>
 
-                    <button
-                        className={
-                            adminSection === "bins"
-                                ? "admin-nav-item active"
-                                : "admin-nav-item"
-                        }
-                        onClick={() => {
-                            setTrackingJob(null);
-                            setAdminSection("bins");
-                        }}
-                    >
-                        🗑️ Bin Management
-                    </button>
+            <h2>
+                SmartBin
+            </h2>
+
+            <span>
+                Admin Panel
+            </span>
+
+        </div>
+
+    </div>
 
 
-                    <button
-                        className={
-                            adminSection === "workers"
-                                ? "admin-nav-item active"
-                                : "admin-nav-item"
-                        }
-                        onClick={() => {
-                            setTrackingJob(null);
-                            setAdminSection("workers");
-                        }}
-                    >
-                        👷 Worker Management
-                    </button>
+    {/* NAVIGATION */}
+
+    <nav className="admin-nav">
+
+        {/* DASHBOARD */}
+
+        <button
+            className={
+                adminSection === "dashboard"
+                    ? "admin-nav-item active"
+                    : "admin-nav-item"
+            }
+            onClick={() => {
+                setTrackingJob(null);
+                setAdminSection("dashboard");
+                setMobileSidebarOpen(false);
+            }}
+        >
+            📊 Dashboard
+        </button>
 
 
-                    <button
-                        className={
-                            adminSection === "jobs"
-                                ? "admin-nav-item active"
-                                : "admin-nav-item"
-                        }
-                        onClick={() => {
-                            setTrackingJob(null);
-                            setAdminSection("jobs");
-                        }}
-                    >
-                        📋 Job Management
-                    </button>
+        {/* BIN MANAGEMENT */}
+
+        <button
+            className={
+                adminSection === "bins"
+                    ? "admin-nav-item active"
+                    : "admin-nav-item"
+            }
+            onClick={() => {
+                setTrackingJob(null);
+                setAdminSection("bins");
+                setMobileSidebarOpen(false);
+            }}
+        >
+            🗑️ Bin Management
+        </button>
 
 
-                    <button
-                        className={
-                            adminSection === "map"
-                                ? "admin-nav-item active"
-                                : "admin-nav-item"
-                        }
-                        onClick={() => {
-                            setTrackingJob(null);
-                            setAdminSection("map");
-                        }}
-                    >
-                        🗺️ Live Map
-                    </button>
+        {/* WORKER MANAGEMENT */}
 
-                </nav>
+        <button
+            className={
+                adminSection === "workers"
+                    ? "admin-nav-item active"
+                    : "admin-nav-item"
+            }
+            onClick={() => {
+                setTrackingJob(null);
+                setAdminSection("workers");
+                setMobileSidebarOpen(false);
+            }}
+        >
+            👷 Worker Management
+        </button>
 
 
-                {/* LOGOUT */}
+        {/* JOB MANAGEMENT */}
 
-                <button
-                    className="admin-logout"
-                    onClick={onLogout}
-                >
-                    🚪 Logout
-                </button>
+        <button
+            className={
+                adminSection === "jobs"
+                    ? "admin-nav-item active"
+                    : "admin-nav-item"
+            }
+            onClick={() => {
+                setTrackingJob(null);
+                setAdminSection("jobs");
+                setMobileSidebarOpen(false);
+            }}
+        >
+            📋 Job Management
+        </button>
 
-            </aside>
 
+        {/* LIVE MAP */}
+
+        <button
+            className={
+                adminSection === "map"
+                    ? "admin-nav-item active"
+                    : "admin-nav-item"
+            }
+            onClick={() => {
+                setTrackingJob(null);
+                setAdminSection("map");
+                setMobileSidebarOpen(false);
+            }}
+        >
+            🗺️ Live Map
+        </button>
+
+    </nav>
+
+
+    {/* LOGOUT */}
+
+    <button
+        className="admin-logout"
+        onClick={onLogout}
+    >
+        🚪 Logout
+    </button>
+
+</aside>
+{mobileSidebarOpen && (
+    <button
+        type="button"
+        className="mobile-sidebar-overlay"
+        onClick={() => setMobileSidebarOpen(false)}
+        aria-label="Close navigation"
+    />
+)}
 
             {/* =================================================
                 MAIN ADMIN AREA
@@ -767,7 +887,20 @@ useEffect(() => {
 
 <header className="admin-topbar">
 
+    {/* MOBILE MENU */}
+
+    <button
+        type="button"
+        className="mobile-menu-button"
+        onClick={() => setMobileSidebarOpen(true)}
+        aria-label="Open navigation"
+    >
+        ☰
+    </button>
+
+
     {/* LEFT SIDE */}
+
     <div>
 
         <h1>
@@ -784,18 +917,10 @@ useEffect(() => {
 
 
     {/* RIGHT SIDE */}
+
     <div className="admin-topbar-right">
 
-        {/* =========================================
-            NOTIFICATION BELL
-        ========================================= */}
-
         <NotificationBell />
-
-
-        {/* =========================================
-            ADMIN PROFILE
-        ========================================= */}
 
         <button
             type="button"
@@ -803,6 +928,7 @@ useEffect(() => {
             onClick={() => {
                 setShowAdminProfile(true);
                 setTrackingJob(null);
+                setMobileSidebarOpen(false);
             }}
         >
 
@@ -1720,18 +1846,41 @@ useEffect(() => {
                                                                     TRACK WORKER
                                                                 ================================= */}
 
-                                                                <button
-                                                                    type="button"
-                                                                    className="worker-track-button"
-                                                                    disabled={!hasGPS}
-                                                                    onClick={() =>
-                                                                        handleTrackWorkerFromWorkerList(
-                                                                            worker
-                                                                        )
-                                                                    }
-                                                                >
-                                                                     Track Worker
-                                                                </button>
+                                                                <div className="worker-card-actions">
+
+    <button
+        type="button"
+        className="worker-track-button"
+        disabled={
+            !hasGPS ||
+            deletingWorkerId === worker._id
+        }
+        onClick={() =>
+            handleTrackWorkerFromWorkerList(worker)
+        }
+    >
+        {hasGPS ? "Track Worker" : "GPS Unavailable"}
+    </button>
+
+    <button
+        type="button"
+        className="worker-delete-button"
+        disabled={
+            worker.isActive === false ||
+            deletingWorkerId === worker._id
+        }
+        onClick={() =>
+            handleDeleteWorker(worker)
+        }
+    >
+        {deletingWorkerId === worker._id
+            ? "Deleting..."
+            : worker.isActive === false
+                ? "Deleted"
+                : "Delete Worker"}
+    </button>
+
+</div>
 
                                                             </div>
 

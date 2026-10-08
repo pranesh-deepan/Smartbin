@@ -8,6 +8,7 @@ import {
 
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import "./BinLocationMap.css";
 
 // Fix Leaflet marker icons in Vite
 delete L.Icon.Default.prototype._getIconUrl;
@@ -67,7 +68,6 @@ function BinLocationMap({ onLocationSelect }) {
                 zoom={7}
                 scrollWheelZoom={true}
                 style={{
-                    height: "400px",
                     width: "100%",
                 }}
             >

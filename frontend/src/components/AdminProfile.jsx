@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "./AdminProfile.css";
 
 const AdminProfile = ({
     onBack,

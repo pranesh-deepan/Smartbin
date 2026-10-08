@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Job = require("../models/Job");
 
 // =====================================================
 // GET ALL WORKERS - ADMIN ONLY
@@ -116,8 +117,105 @@ const updateWorkerStatus = async (req, res) => {
 };
 
 
+// =====================================================
+// DELETE WORKER - ADMIN ONLY
+// =====================================================
+// Soft delete:
+// Worker remains in MongoDB so old job/history records
+// are not broken. The worker is marked as inactive.
+//
+// A worker cannot be deleted while they have an active job.
+// =====================================================
+
+const deleteWorker = async (req, res) => {
+    try {
+        const workerId = req.params.workerId;
+
+        // -------------------------------------------------
+        // Find worker
+        // -------------------------------------------------
+
+        const worker = await User.findOne({
+            _id: workerId,
+            role: "Worker",
+        });
+
+        if (!worker) {
+            return res.status(404).json({
+                success: false,
+                message: "Worker not found",
+            });
+        }
+
+        // -------------------------------------------------
+        // Check active jobs
+        // -------------------------------------------------
+
+        const activeJob = await Job.findOne({
+            worker: workerId,
+            status: {
+                $in: [
+                    "Assigned",
+                    "Accepted",
+                    "in_progress",
+                    "in progress",
+                ],
+            },
+        });
+
+        if (activeJob) {
+            return res.status(409).json({
+                success: false,
+                message:
+                    "This worker cannot be deleted because they have an active job. Complete or reassign the job first.",
+                jobId: activeJob._id,
+                jobStatus: activeJob.status,
+            });
+        }
+
+        // -------------------------------------------------
+        // Soft delete worker
+        // -------------------------------------------------
+
+        worker.isActive = false;
+
+        // Make sure the deleted worker is not considered
+        // available for automatic job assignment.
+        if (worker.availability !== undefined) {
+            worker.availability = "Available";
+        }
+
+        await worker.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Worker deleted successfully",
+            worker: {
+                id: worker._id,
+                name: worker.name,
+                email: worker.email,
+                isActive: worker.isActive,
+            },
+        });
+
+    } catch (error) {
+        console.error("Delete Worker Error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+};
+
+
+// =====================================================
+// EXPORTS
+// =====================================================
+
 module.exports = {
     getAllWorkers,
     getWorkerById,
     updateWorkerStatus,
+    deleteWorker,
 };
