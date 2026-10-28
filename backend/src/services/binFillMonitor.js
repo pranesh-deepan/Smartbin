@@ -1,4 +1,4 @@
-const Bin = require("../models/Bin");
+const Bin = require("../models/bin");
 const {
     createAutomaticJobForBin,
 } = require("../controllers/jobController");

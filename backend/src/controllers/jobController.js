@@ -1,5 +1,5 @@
 const Job = require("../models/Job");
-const Bin = require("../models/Bin");
+const Bin = require("../models/bin");
 const User = require("../models/User");
 const { calculateDistance } = require("../utils/distanceCalculator");
 
