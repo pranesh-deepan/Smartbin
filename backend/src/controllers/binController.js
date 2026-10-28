@@ -1,4 +1,4 @@
-const Bin = require("../models/Bin");
+const Bin = require("../models/bin");
 const { validateBin } = require("../validations/binValidation");
 const Job = require("../models/Job");
 const FILL_LEVEL_THRESHOLD = 90;
