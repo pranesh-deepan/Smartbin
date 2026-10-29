@@ -1,0 +1,704 @@
+/* =========================================================
+   SMARTBIN-W — DASHBOARD THEME LAYER (LIGHT ONLY)
+   Imported last in main.jsx so it re-skins the existing
+   Admin / Worker screens without touching their logic.
+   Cosmetic properties only: colour, border, font, shadow,
+   motion. Layout rules from the component CSS are kept.
+   ========================================================= */
+
+body,
+.smartbin-app,
+.admin-layout {
+    font-family: var(--font-body);
+    color: var(--ink);
+}
+
+.admin-layout {
+    background:
+        radial-gradient(900px 420px at 100% 0%, rgba(255, 212, 38, 0.18), transparent 70%),
+        radial-gradient(800px 380px at 0% 100%, rgba(37, 99, 235, 0.08), transparent 70%),
+        var(--bg-soft);
+}
+
+/* ---------- Brand ---------- */
+
+.brand-icon,
+.worker-brand-icon {
+    background: var(--yellow);
+    color: var(--ink);
+    border: 2px solid var(--ink);
+    border-radius: 12px;
+    box-shadow: 2px 2px 0 var(--ink);
+}
+
+.admin-brand h2,
+.worker-brand h2 {
+    font-family: var(--font-display);
+    font-stretch: 62%;
+    font-weight: 900;
+    font-size: 1.7rem;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.admin-brand span,
+.worker-brand span {
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+/* ---------- Sidebar ---------- */
+
+.admin-sidebar {
+    background: #fff;
+    border-right: 2px solid var(--ink);
+}
+
+.admin-nav-item {
+    border: 2px solid transparent;
+    border-radius: var(--radius-sm);
+    color: #475569;
+    font-weight: 700;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s,
+        transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+.admin-nav-item:hover {
+    background: var(--yellow-50);
+    color: var(--ink);
+    border-color: var(--ink);
+    transform: translateX(3px);
+}
+
+.admin-nav-item.active {
+    background: var(--blue);
+    border-color: var(--ink);
+    color: #fff;
+    box-shadow: 3px 3px 0 var(--yellow);
+}
+
+.admin-logout {
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    color: var(--red-600);
+    font-weight: 800;
+    transition: background-color 0.2s, color 0.2s, transform 0.2s var(--ease);
+}
+
+.admin-logout:hover {
+    background: var(--red);
+    color: #fff;
+}
+
+.admin-logout:active { transform: scale(0.98); }
+
+/* ---------- Top bar ---------- */
+
+.admin-topbar {
+    background: rgba(255, 253, 245, 0.94);
+    border-bottom: 2px solid var(--ink);
+    backdrop-filter: blur(8px);
+}
+
+.admin-topbar h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-stretch: 62%;
+    font-weight: 900;
+    font-size: clamp(1.7rem, 4vw, 2.6rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.admin-topbar p {
+    margin-top: 6px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+.admin-avatar,
+.worker-avatar {
+    background: var(--yellow);
+    border: 2px solid var(--ink);
+}
+
+.admin-profile-button {
+    border: 2px solid var(--line);
+    border-radius: var(--radius);
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s var(--ease), transform 0.2s var(--ease);
+}
+
+.admin-profile-button:hover {
+    border-color: var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    transform: translate(-1px, -1px);
+}
+
+.mobile-menu-button,
+.mobile-sidebar-close {
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--yellow);
+    color: var(--ink);
+}
+
+/* ---------- Page headers ---------- */
+
+.admin-page-header h2 {
+    font-family: var(--font-display);
+    font-stretch: 62%;
+    font-weight: 900;
+    font-size: clamp(2.2rem, 6vw, 3.8rem);
+    line-height: 0.95;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.admin-page-header p {
+    color: var(--ink-soft);
+    font-weight: 500;
+}
+
+.dashboard-summary-header h3,
+.worker-list-header h3,
+.worker-form-header h3,
+.admin-profile-title,
+.worker-history-header h2 {
+    font-family: var(--font-display);
+    font-stretch: 70%;
+    font-weight: 900;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+/* ---------- Cards ---------- */
+
+.dashboard-stat-card,
+.dashboard-summary-card,
+.dashboard-info-card,
+.worker-card,
+.job-card,
+.add-bin-card,
+.bin-list-card,
+.map-card,
+.worker-registration-card,
+.worker-job-card,
+.worker-jobs-card,
+.worker-gps-card,
+.tracking-main-card,
+.tracking-worker-card,
+.admin-profile-card,
+.worker-profile-card,
+.worker-history-summary-card {
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease),
+        border-color 0.25s;
+}
+
+.dashboard-stat-card:hover,
+.dashboard-info-card:hover,
+.worker-card:hover,
+.job-card:hover,
+.worker-job-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+}
+
+/* Stat cards: coloured top accent by meaning
+   (blue = totals, green = healthy, yellow = warning, red = critical, teal = jobs) */
+
+.dashboard-stat-card { border-top: 4px solid var(--blue); }
+
+.dashboard-stat-card:has(.dashboard-stat-icon.normal) { border-top-color: var(--green); }
+.dashboard-stat-card:has(.dashboard-stat-icon.warning) { border-top-color: var(--yellow); }
+.dashboard-stat-card:has(.dashboard-stat-icon.critical) { border-top-color: var(--red); }
+.dashboard-stat-card:has(.dashboard-stat-icon.jobs) { border-top-color: var(--teal); }
+.dashboard-stat-card:has(.dashboard-stat-icon.workers) { border-top-color: var(--purple); }
+
+.dashboard-stat-icon {
+    border-radius: 14px;
+    transition: transform 0.25s var(--ease);
+}
+
+.dashboard-stat-card:hover .dashboard-stat-icon { transform: scale(1.08) rotate(-4deg); }
+
+.dashboard-stat-icon.total { background: var(--blue-100); }
+.dashboard-stat-icon.normal { background: var(--green-100); }
+.dashboard-stat-icon.warning { background: var(--yellow-50); }
+.dashboard-stat-icon.critical { background: var(--red-50); }
+.dashboard-stat-icon.jobs { background: #ccfbf1; }
+.dashboard-stat-icon.workers { background: #ede9fe; }
+
+.dashboard-stat-card span {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+.dashboard-stat-card > div:last-child { min-width: 0; }
+
+.dashboard-stat-card strong {
+    display: block;
+    overflow-wrap: anywhere;
+    font-family: var(--font-display);
+    font-stretch: 70%;
+    font-weight: 900;
+    font-size: clamp(1.5rem, 2.1vw, 2.4rem);
+    line-height: 1.05;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+}
+
+/* Status dots */
+
+.normal-dot,
+.live-dot,
+.online-dot,
+.tracking-online-dot { background: var(--green); }
+.warning-dot { background: var(--yellow-600); }
+.critical-dot { background: var(--red); }
+
+/* ---------- Buttons ---------- */
+
+.admin-button,
+.add-bin-button,
+.worker-register-button,
+.worker-register-top-button,
+.job-action-button.primary,
+.admin-profile-save-button,
+.admin-profile-edit-main-button,
+.worker-profile-save-button,
+.worker-profile-edit-button,
+.dashboard-refresh-button,
+.dashboard-view-button,
+.worker-refresh-button,
+.tracking-refresh-button,
+.track-worker-button,
+.worker-track-button {
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--blue);
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease),
+        background-color 0.2s, opacity 0.2s;
+}
+
+.admin-button:hover:not(:disabled),
+.add-bin-button:hover:not(:disabled),
+.worker-register-button:hover:not(:disabled),
+.worker-register-top-button:hover:not(:disabled),
+.job-action-button.primary:hover:not(:disabled),
+.admin-profile-save-button:hover:not(:disabled),
+.admin-profile-edit-main-button:hover:not(:disabled),
+.worker-profile-save-button:hover:not(:disabled),
+.worker-profile-edit-button:hover:not(:disabled),
+.dashboard-refresh-button:hover:not(:disabled),
+.dashboard-view-button:hover:not(:disabled),
+.worker-refresh-button:hover:not(:disabled),
+.tracking-refresh-button:hover:not(:disabled),
+.track-worker-button:hover:not(:disabled),
+.worker-track-button:hover:not(:disabled) {
+    background: var(--blue-600);
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--ink);
+}
+
+.admin-button:active:not(:disabled),
+.add-bin-button:active:not(:disabled),
+.worker-register-button:active:not(:disabled),
+.job-action-button.primary:active:not(:disabled),
+.dashboard-refresh-button:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--ink);
+}
+
+
+/* Zero-specificity defaults for controls that had no base style originally.
+   Any existing component rule (including mobile ones) still takes precedence. */
+
+:where(.worker-register-top-button, .worker-register-button, .worker-refresh-button) {
+    min-height: 42px;
+    padding: 10px 18px;
+    font-size: 0.85rem;
+}
+
+:where(.worker-list-header) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 16px;
+    margin-bottom: 16px;
+}
+
+:where(.worker-list-section) { margin-top: 24px; }
+
+/* Classless buttons (unstyled in the original) get the brand button look.
+   Zero specificity: any component rule or class still overrides it. */
+
+:where(button:not([class])) {
+    min-height: 40px;
+    padding: 9px 16px;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--yellow);
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    box-shadow: 3px 3px 0 var(--ink);
+    cursor: pointer;
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+:where(button:not([class])):hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--ink);
+}
+
+/* Card "Open ..." actions read as links, not heavy buttons */
+
+.dashboard-info-card button {
+    padding: 4px 0;
+    border: none;
+    border-bottom: 3px solid var(--yellow);
+    border-radius: 0;
+    background: transparent;
+    color: var(--blue-600);
+    font-weight: 800;
+    transition: color 0.2s, border-color 0.2s, transform 0.2s var(--ease);
+}
+
+.dashboard-info-card button:hover {
+    border-bottom-color: var(--blue);
+    color: var(--ink);
+    transform: translateX(3px);
+}
+
+/* secondary / back */
+
+.admin-button.secondary,
+.job-action-button.secondary,
+.secondary-button,
+.back-button,
+.admin-profile-back-button,
+.admin-profile-cancel-button,
+.worker-profile-back-button,
+.worker-profile-cancel-button,
+.tracking-back-button,
+.navigation-exit-button {
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    color: var(--ink);
+    font-weight: 800;
+    box-shadow: none;
+    transition: background-color 0.2s, color 0.2s, transform 0.2s var(--ease);
+}
+
+.admin-button.secondary:hover:not(:disabled),
+.job-action-button.secondary:hover:not(:disabled),
+.secondary-button:hover:not(:disabled),
+.back-button:hover,
+.admin-profile-back-button:hover,
+.admin-profile-cancel-button:hover,
+.worker-profile-back-button:hover,
+.worker-profile-cancel-button:hover,
+.tracking-back-button:hover,
+.navigation-exit-button:hover {
+    background: var(--yellow);
+    color: var(--ink);
+    transform: translateY(-1px);
+}
+
+/* accept (healthy / positive) */
+
+.worker-job-button.accept,
+.notification-accept {
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--green);
+    color: #fff;
+    font-weight: 800;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), background-color 0.2s;
+}
+
+.worker-job-button.accept:hover:not(:disabled),
+.notification-accept:hover:not(:disabled) {
+    background: var(--green-600);
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--ink);
+}
+
+.worker-job-button.navigate {
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--yellow);
+    color: var(--ink);
+    font-weight: 800;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+.worker-job-button.navigate:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--ink);
+}
+
+/* danger (critical) */
+
+.admin-button.danger,
+.worker-job-button.reject,
+.notification-reject,
+.delete-bin-button,
+.table-delete-button,
+.worker-delete-button {
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    color: var(--red-600);
+    font-weight: 800;
+    transition: background-color 0.2s, color 0.2s, transform 0.2s var(--ease);
+}
+
+.admin-button.danger:hover:not(:disabled),
+.worker-job-button.reject:hover:not(:disabled),
+.notification-reject:hover:not(:disabled),
+.delete-bin-button:hover:not(:disabled),
+.table-delete-button:hover:not(:disabled),
+.worker-delete-button:hover:not(:disabled) {
+    background: var(--red);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.worker-logout-button {
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    font-weight: 800;
+}
+
+button:disabled,
+.admin-button:disabled,
+.worker-job-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* ---------- Form controls ---------- */
+
+:where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]), select, textarea) {
+    border: 2px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    color: var(--ink);
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+:where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]), select, textarea):hover:not(:disabled) {
+    border-color: #94a3b8;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+
+.form-group label,
+.worker-form-grid label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+.login-message { animation: sb-pop 0.3s var(--ease); }
+
+/* ---------- Tables ---------- */
+
+.admin-table-wrapper,
+.bin-table-wrapper,
+.worker-history-table-wrapper,
+.worker-history-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.bin-table th,
+.admin-table th,
+.worker-history-table th {
+    background: var(--cream);
+    color: var(--ink-soft);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--ink);
+}
+
+.bin-table tbody tr,
+.admin-table tbody tr,
+.worker-history-table tbody tr { transition: background-color 0.15s; }
+
+.bin-table tbody tr:hover,
+.admin-table tbody tr:hover,
+.worker-history-table tbody tr:hover { background: var(--yellow-50); }
+
+/* ---------- Fill indicators / status chips ---------- */
+
+.fill-progress,
+.table-fill-progress,
+.popup-fill-progress,
+.worker-fill-progress,
+.job-fill-progress {
+    transform-origin: left center;
+    transition: width 0.8s var(--ease), background-color 0.3s;
+    animation: sb-grow 0.9s var(--ease) both;
+}
+
+@keyframes sb-grow { from { width: 0; } }
+
+.worker-status,
+.job-status,
+.worker-job-status,
+.history-status,
+.bin-status-badge,
+.fill-badge,
+.admin-profile-status-badge {
+    font-weight: 800;
+    letter-spacing: 0.04em;
+}
+
+/* ---------- Notifications ---------- */
+
+.notification-panel {
+    border: 2px solid var(--ink);
+    border-radius: var(--radius);
+    background: #fff;
+    box-shadow: 6px 6px 0 var(--ink);
+    max-width: calc(100vw - 24px);
+    animation: sb-pop 0.25s var(--ease);
+}
+
+.notification-bell {
+    border: 2px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.notification-bell:hover {
+    border-color: var(--ink);
+    background: var(--yellow-50);
+}
+
+.notification-badge { background: var(--red); color: #fff; font-weight: 800; }
+
+.notification-item { transition: background-color 0.15s; }
+.notification-item:hover { background: var(--yellow-50); }
+
+/* ---------- Empty / loading / error states ---------- */
+
+.worker-empty,
+.worker-no-jobs,
+.navigation-no-job {
+    border: 2px dashed var(--line);
+    border-radius: var(--radius);
+    background: var(--cream);
+}
+
+.worker-error {
+    border: 2px solid var(--red);
+    border-radius: var(--radius-sm);
+    background: var(--red-50);
+    color: var(--red-600);
+    font-weight: 600;
+}
+
+.worker-loading,
+.dashboard-loading {
+    color: var(--ink-soft);
+    font-weight: 600;
+    animation: sb-breathe 1.4s ease-in-out infinite;
+}
+
+@keyframes sb-breathe { 50% { opacity: 0.45; } }
+
+/* ---------- Maps ---------- */
+
+.admin-map-card,
+.tracking-map,
+.map-wrapper,
+.navigation-map-container {
+    border-radius: 16px;
+}
+
+.leaflet-container { font-family: var(--font-body); }
+
+/* ---------- Staggered entrance for dashboard grids ---------- */
+
+@keyframes sb-rise {
+    from { opacity: 0; transform: translateY(16px); }
+}
+
+.admin-content { animation: sb-fade 0.4s var(--ease) both; }
+
+@keyframes sb-fade { from { opacity: 0; } }
+
+.dashboard-stats > *,
+.dashboard-info-grid > *,
+.workers-grid > *,
+.jobs-list > *,
+.dashboard-summary-card,
+.worker-registration-card {
+    animation: sb-rise 0.55s var(--ease) both;
+}
+
+.dashboard-stats > :nth-child(1), .dashboard-info-grid > :nth-child(1), .workers-grid > :nth-child(1), .jobs-list > :nth-child(1) { animation-delay: 0ms; }
+.dashboard-stats > :nth-child(2), .dashboard-info-grid > :nth-child(2), .workers-grid > :nth-child(2), .jobs-list > :nth-child(2) { animation-delay: 60ms; }
+.dashboard-stats > :nth-child(3), .dashboard-info-grid > :nth-child(3), .workers-grid > :nth-child(3), .jobs-list > :nth-child(3) { animation-delay: 120ms; }
+.dashboard-stats > :nth-child(4), .dashboard-info-grid > :nth-child(4), .workers-grid > :nth-child(4), .jobs-list > :nth-child(4) { animation-delay: 180ms; }
+.dashboard-stats > :nth-child(5), .workers-grid > :nth-child(5), .jobs-list > :nth-child(5) { animation-delay: 240ms; }
+.dashboard-stats > :nth-child(n + 6), .workers-grid > :nth-child(n + 6), .jobs-list > :nth-child(n + 6) { animation-delay: 300ms; }
+
+/* ---------- Scrollbars ---------- */
+
+* { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 640px) {
+    .admin-topbar h1 { font-size: 1.5rem; }
+    .dashboard-stat-card:hover,
+    .dashboard-info-card:hover,
+    .worker-card:hover,
+    .job-card:hover,
+    .worker-job-card:hover { transform: none; box-shadow: var(--shadow-sm); }
+}

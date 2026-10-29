@@ -61,11 +61,35 @@ const createJob = async (req, res) => {
         });
 
         if (existingJob) {
-            return res.status(400).json({
-                success: false,
-                message: "An active job already exists for this bin",
-            });
+    console.log(
+        `Active job already exists for ${bin.binId}.`
+    );
+
+    // Retry assignment if the existing job is still unassigned
+    if (
+        existingJob.status === "Pending" &&
+        !existingJob.worker
+    ) {
+        console.log(
+            `Retrying worker assignment for ${bin.binId}...`
+        );
+
+        const assignedWorker =
+            await automaticallyAssignNearestWorker(existingJob);
+
+        if (assignedWorker) {
+            console.log(
+                `Worker ${assignedWorker.name} assigned to ${bin.binId}`
+            );
+        } else {
+            console.log(
+                `No eligible worker found for ${bin.binId}. Job remains Pending.`
+            );
         }
+    }
+
+    return existingJob;
+}
 
         // Create Job
         const job = await Job.create({
