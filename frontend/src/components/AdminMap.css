@@ -1,0 +1,629 @@
+/* =========================================================
+   SMARTBIN - ADMIN MAP
+   Desktop + Mobile Responsive Styling
+   ========================================================= */
+
+
+/* =========================================================
+   MAIN WRAPPER
+   ========================================================= */
+
+.admin-map-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.admin-map-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 24px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    box-sizing: border-box;
+}
+
+.admin-map-header h2 {
+    margin: 0 0 6px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.admin-map-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   LIVE INDICATOR
+   ========================================================= */
+
+.admin-map-live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 20px;
+    background: #ecfdf5;
+    color: #15803d;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.admin-map-live-indicator span {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #16a34a;
+    display: inline-block;
+    animation: adminMapLivePulse 1.5s infinite;
+}
+
+@keyframes adminMapLivePulse {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.45;
+        transform: scale(1.25);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+/* =========================================================
+   MAP CONTAINER
+   ========================================================= */
+
+.admin-map-container {
+    position: relative;
+    width: 100%;
+    height: 560px;
+    min-height: 400px;
+    overflow: hidden;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    background: #f3f4f6;
+    box-sizing: border-box;
+}
+
+.admin-map-container .leaflet-container {
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    z-index: 1;
+}
+
+
+/* =========================================================
+   LEAFLET CONTROLS
+   ========================================================= */
+
+.admin-map-container .leaflet-control-zoom {
+    margin-left: 12px;
+    margin-top: 12px;
+}
+
+.admin-map-container .leaflet-control-zoom a {
+    width: 34px;
+    height: 34px;
+    line-height: 34px;
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   POPUP
+   ========================================================= */
+
+.admin-map-popup {
+    min-width: 190px;
+    max-width: 280px;
+    font-family: Arial, sans-serif;
+}
+
+.admin-map-popup h4 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.admin-map-popup > div > div,
+.admin-map-popup > div {
+    box-sizing: border-box;
+}
+
+.admin-map-popup div {
+    font-size: 13px;
+}
+
+.admin-map-popup span {
+    color: #6b7280;
+}
+
+.admin-map-popup strong {
+    color: #111827;
+}
+
+
+/* =========================================================
+   BIN MARKER
+   ========================================================= */
+
+.admin-map-bin-marker {
+    background: transparent;
+    border: none;
+}
+
+.admin-map-bin-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+    font-size: 21px;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   WORKER MARKER
+   ========================================================= */
+
+.admin-map-worker-marker {
+    background: transparent;
+    border: none;
+}
+
+.admin-map-worker-icon {
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #2563eb;
+    border: 3px solid #ffffff;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+    font-size: 23px;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   NO LOCATION MESSAGE
+   ========================================================= */
+
+.admin-map-no-location {
+    position: absolute;
+    inset: 0;
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.92);
+    box-sizing: border-box;
+}
+
+.admin-map-no-location > div {
+    font-size: 46px;
+    margin-bottom: 10px;
+}
+
+.admin-map-no-location h3 {
+    margin: 0 0 8px;
+    font-size: 20px;
+    color: #111827;
+}
+
+.admin-map-no-location p {
+    max-width: 400px;
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   LEGEND
+   ========================================================= */
+
+.admin-map-legend {
+    width: 100%;
+    padding: 18px 20px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    box-sizing: border-box;
+}
+
+.map-legend-title {
+    margin-bottom: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.map-legend-items {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px 28px;
+}
+
+.map-legend-items > div {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #4b5563;
+    font-size: 13px;
+}
+
+.legend-marker {
+    width: 26px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.bin-normal {
+    background: #16a34a;
+}
+
+.bin-warning {
+    background: #f59e0b;
+}
+
+.bin-critical {
+    background: #dc2626;
+}
+
+.worker-marker {
+    background: #2563eb;
+}
+
+.route-legend-line {
+    display: inline-block;
+    width: 30px;
+    height: 5px;
+    border-radius: 5px;
+    background: #2563eb;
+}
+
+
+/* =========================================================
+   STATISTICS
+   ========================================================= */
+
+.admin-map-stats {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.admin-map-stat {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 17px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    box-sizing: border-box;
+}
+
+.admin-map-stat > span {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #f0fdf4;
+    font-size: 20px;
+}
+
+.admin-map-stat > div {
+    min-width: 0;
+}
+
+.admin-map-stat strong {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 21px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.admin-map-stat small {
+    display: block;
+    color: #6b7280;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .admin-map-container {
+        height: 500px;
+    }
+
+    .admin-map-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .admin-map-wrapper {
+        width: 100%;
+        gap: 14px;
+        overflow: hidden;
+    }
+
+
+    /* HEADER */
+
+    .admin-map-header {
+        padding: 15px;
+        gap: 12px;
+        border-radius: 12px;
+    }
+
+    .admin-map-header h2 {
+        font-size: 18px;
+    }
+
+    .admin-map-header p {
+        font-size: 12px;
+    }
+
+    .admin-map-live-indicator {
+        padding: 7px 10px;
+        font-size: 11px;
+    }
+
+    .admin-map-live-indicator span {
+        width: 7px;
+        height: 7px;
+    }
+
+
+    /* MAP */
+
+    .admin-map-container {
+        height: 55vh;
+        min-height: 360px;
+        max-height: 560px;
+        border-radius: 12px;
+    }
+
+    .admin-map-container .leaflet-control-zoom {
+        margin-left: 8px;
+        margin-top: 8px;
+    }
+
+    .admin-map-container .leaflet-control-zoom a {
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        font-size: 17px;
+    }
+
+
+    /* POPUP */
+
+    .admin-map-popup {
+        min-width: 160px;
+        max-width: 230px;
+    }
+
+    .admin-map-popup h4 {
+        font-size: 14px;
+        margin-bottom: 9px;
+    }
+
+    .admin-map-popup div {
+        font-size: 12px;
+    }
+
+
+    /* LEGEND */
+
+    .admin-map-legend {
+        padding: 15px;
+        border-radius: 12px;
+    }
+
+    .map-legend-title {
+        margin-bottom: 12px;
+        font-size: 14px;
+    }
+
+    .map-legend-items {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .map-legend-items > div {
+        font-size: 11px;
+        gap: 6px;
+    }
+
+    .legend-marker {
+        width: 23px;
+        height: 23px;
+        font-size: 12px;
+    }
+
+    .route-legend-line {
+        width: 24px;
+        height: 4px;
+    }
+
+
+    /* STATISTICS */
+
+    .admin-map-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .admin-map-stat {
+        padding: 13px;
+        gap: 9px;
+        border-radius: 12px;
+    }
+
+    .admin-map-stat > span {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+
+    .admin-map-stat strong {
+        font-size: 17px;
+    }
+
+    .admin-map-stat small {
+        font-size: 10px;
+        white-space: normal;
+        line-height: 1.3;
+    }
+
+
+    /* NO LOCATION */
+
+    .admin-map-no-location {
+        padding: 20px;
+    }
+
+    .admin-map-no-location > div {
+        font-size: 38px;
+    }
+
+    .admin-map-no-location h3 {
+        font-size: 17px;
+    }
+
+    .admin-map-no-location p {
+        font-size: 12px;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .admin-map-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .admin-map-live-indicator {
+        align-self: flex-start;
+    }
+
+    .admin-map-container {
+        height: 52vh;
+        min-height: 320px;
+    }
+
+    .map-legend-items {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .admin-map-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .admin-map-stat {
+        padding: 11px;
+    }
+
+    .admin-map-stat > span {
+        width: 31px;
+        height: 31px;
+        flex-basis: 31px;
+        font-size: 14px;
+    }
+
+    .admin-map-stat strong {
+        font-size: 16px;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL SCREENS
+   ========================================================= */
+
+@media (max-width: 360px) {
+
+    .admin-map-container {
+        height: 50vh;
+        min-height: 300px;
+    }
+
+    .map-legend-items {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-map-stats {
+        grid-template-columns: 1fr;
+    }
+}
