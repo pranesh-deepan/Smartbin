@@ -7,6 +7,7 @@ const sensorDataRoutes = require("./routes/sensorDataRoutes");
 const jobRoutes = require("./routes/jobRoutes");
 const workerRoutes = require("./routes/workerRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const deviceMappingRoutes = require("./routes/deviceMappingRoutes")
 
 const app = express();
 
@@ -30,6 +31,8 @@ app.use("/api/sensor-data", sensorDataRoutes);
 app.use("/api/jobs", jobRoutes);
 
 app.use("/api/workers", workerRoutes);
+
+app.use("/api/device-mappings", deviceMappingRoutes);
 
 // =====================================================
 // NOTIFICATION ROUTES

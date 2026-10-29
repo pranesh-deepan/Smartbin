@@ -1,20 +1,16 @@
-const express = require("express");
 
+const express = require("express");
 const router = express.Router();
 
 const {
-    createSensorData,
+  createSensorData,
+  createDeviceSensorData,
 } = require("../controllers/sensorDataController");
 
-const {
-    protect,
-} = require("../middleware/authMiddleware");
+const { protect } = require("../middleware/authMiddleware");
+const { deviceAuth } = require("../middleware/deviceAuth");
 
-// Receive sensor data
-router.post(
-    "/",
-    protect,
-    createSensorData
-);
+router.post("/", protect, createSensorData);
+router.post("/device", deviceAuth, createDeviceSensorData);
 
 module.exports = router;
